@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SubdivisionRequest;
 use App\Http\Resources\Admin\ShowEmailResource;
 use App\Models\Subdivision;
-use App\Http\Requests\StoreSubdivisionRequest;
-use App\Http\Requests\UpdateSubdivisionRequest;
 use App\Http\Resources\Admin\SubdivisionResource;
 use App\Models\User;
 
@@ -26,7 +24,7 @@ class SubdivisionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreSubdivisionRequest  $request
+     * @param  \App\Http\Requests\Admin\SubdivisionRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(SubdivisionRequest $request,Subdivision $subdivision)
@@ -52,14 +50,16 @@ class SubdivisionController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateSubdivisionRequest  $request
+     * @param  \App\Http\Requests\Admin\SubdivisionRequest  $request
      * @param  \App\Models\Subdivision  $subdivision
      * @return \Illuminate\Http\Response
      */
     public function update(SubdivisionRequest $request, $id)
     {
         $subdivision = Subdivision::findOrFail($id);
-        return $subdivision->update($request->validated());
+        $data = $request->validated();
+        $request = $subdivision->update($data);
+        return $request;
 
     }
 
