@@ -16,7 +16,9 @@ class ShowEmailResource extends JsonResource
     {
         return[
             'id'=>$this->id,
-            'email'=>$this->email
+            'hoa_member_lname'=>$this->hoa_member_lname,
+            'hoa_member_fname'=>$this->hoa_member_fname,
+            'hoa_member_mname'=>$this->hoa_member_fname
         ];
     }
 }

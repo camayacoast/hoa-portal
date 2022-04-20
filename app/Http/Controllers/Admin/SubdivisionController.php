@@ -20,7 +20,7 @@ class SubdivisionController extends Controller
      */
     public function index()
     {
-        return SubdivisionResource::collection(Subdivision::paginate(10));
+        return SubdivisionResource::collection(Subdivision::orderBy('id', 'DESC')->paginate(10));
     }
 
     /**
@@ -77,7 +77,7 @@ class SubdivisionController extends Controller
     }
 
     public function show_email(){
-        $user = User::select('hoa_member_lname','hoa_member_fname','hoa_member_mname')->get();
+        $user = User::select('id','hoa_member_lname','hoa_member_fname','hoa_member_mname')->get();
         return ShowEmailResource::collection($user);
     }
 }

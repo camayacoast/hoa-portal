@@ -18,7 +18,7 @@ class RegistrationController extends Controller
      */
     public function index()
     {
-        return RegistrationResource::collection(User::where('hoa_member', '1')->paginate(10));
+        return RegistrationResource::collection(User::where('hoa_member', '1')->orderBy('id','DESC')->paginate(10));
     }
 
     /**
