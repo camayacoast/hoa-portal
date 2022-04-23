@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\PrivilegeController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\Member\RegistrationController;
 use App\Http\Controllers\Admin\SubdivisionController;
 use App\Http\Controllers\AuthController;
-use App\Models\Subdivision;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/user/change/status/{id}', [UsersController::class, 'change_status']);
         Route::apiResource('/subdivision',SubdivisionController::class);
         Route::get('/subdivision/show/email',[SubdivisionController::class,'show_email']);
+        Route::apiResource('/privilege',PrivilegeController::class);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
