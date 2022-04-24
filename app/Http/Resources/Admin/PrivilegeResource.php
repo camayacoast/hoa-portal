@@ -20,6 +20,7 @@ class PrivilegeResource extends JsonResource
             'hoa_privilege_package_desc'=>$this->hoa_privilege_package_desc,
             'hoa_privilege_package_category'=>$this->hoa_privilege_package_category,
             'hoa_privilege_package_cost'=>$this->hoa_privilege_package_cost,
+            'hoa_privilege_package_status'=>$this->hoa_privilege_package_status
         ];
     }
 }

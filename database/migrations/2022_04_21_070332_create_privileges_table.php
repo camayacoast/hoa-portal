@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('hoa_privilege_package_category');
             $table->string('hoa_privilege_package_cost');
             $table->integer('hoa_privilege_package_createdby');
+            $table->integer('hoa_privilege_package_status')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

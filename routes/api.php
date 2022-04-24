@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\PrivilegeController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\Member\RegistrationController;
@@ -33,6 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('/subdivision',SubdivisionController::class);
         Route::get('/subdivision/show/email',[SubdivisionController::class,'show_email']);
         Route::apiResource('/privilege',PrivilegeController::class);
+        Route::put('/privilege/change/status/{id}', [PrivilegeController::class, 'change_status']);
+        Route::apiResource('/agent',AgentController::class);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

@@ -78,7 +78,7 @@ class RegistrationController extends Controller
         return response('', 204);
     }
 
-    public function changeStatus($id)
+    public function change_status($id)
     {
         $user = User::find($id);
         $user->hoa_member_status === 1 ? $user->update(['hoa_member_status' => 0])

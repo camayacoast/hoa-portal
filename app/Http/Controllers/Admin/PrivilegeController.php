@@ -80,4 +80,13 @@ class PrivilegeController extends Controller
         $privilege->delete();
         return response('', 204);
     }
+    public function change_status($id)
+    {
+        $privilege = Privilege::find($id);
+        $privilege->hoa_privilege_package_status === 1 ? $privilege->update(['hoa_privilege_package_status' => 0])
+            :  $privilege->update([
+            'hoa_privilege_package_status' => 1
+        ]);
+        return response('', 204);
+    }
 }
