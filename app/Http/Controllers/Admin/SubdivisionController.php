@@ -80,4 +80,13 @@ class SubdivisionController extends Controller
         $user = User::select('id','hoa_member_lname','hoa_member_fname','hoa_member_mname')->get();
         return ShowEmailResource::collection($user);
     }
+    public function change_status($id)
+    {
+        $subdivision = Subdivision::find($id);
+        $subdivision->hoa_subd_status === 1 ? $subdivision->update(['hoa_subd_status' => 0])
+            :  $subdivision->update([
+            'hoa_subd_status' => 1
+        ]);
+        return response('', 204);
+    }
 }

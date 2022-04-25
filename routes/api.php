@@ -32,10 +32,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user/show/subdivision',[UsersController::class,'show_subdivision']);
         Route::put('/user/change/status/{id}', [UsersController::class, 'change_status']);
         Route::apiResource('/subdivision',SubdivisionController::class);
+        Route::put('/subdivision/change/status/{id}', [SubdivisionController::class, 'change_status']);
         Route::get('/subdivision/show/email',[SubdivisionController::class,'show_email']);
         Route::apiResource('/privilege',PrivilegeController::class);
         Route::put('/privilege/change/status/{id}', [PrivilegeController::class, 'change_status']);
         Route::apiResource('/agent',AgentController::class);
+        Route::put('/agent/change/status/{id}', [AgentController::class, 'change_status']);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

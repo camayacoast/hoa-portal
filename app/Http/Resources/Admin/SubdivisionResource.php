@@ -21,7 +21,8 @@ class SubdivisionResource extends JsonResource
             'hoa_subd_blocks'=>$this->hoa_subd_blocks,
             'hoa_subd_lots'=>$this->hoa_subd_lots,
             'hoa_subd_contact_person'=>$this->hoa_subd_contact_person,
-            'hoa_subd_contact_number'=>$this->hoa_subd_contact_number
+            'hoa_subd_contact_number'=>$this->hoa_subd_contact_number,
+             'hoa_subd_status'=>$this->hoa_subd_status
         ];
     }
 }

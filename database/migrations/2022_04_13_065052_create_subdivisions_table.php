@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('hoa_subd_lots')->nullable();
             $table->string('hoa_subd_contact_person')->nullable();
             $table->string('hoa_subd_contact_number')->nullable();
-            $table->boolean('hoa_subd_status')->default(false);
+            $table->integer('hoa_subd_status')->default(1);
             $table->integer('hoa_subd_modifiedBy')->nullable();
             $table->timestamps();
         });

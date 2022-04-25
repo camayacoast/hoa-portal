@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('hoa_sales_agent_mname')->nullable();
             $table->string('hoa_sales_agent_suffix')->nullable();
             $table->string('hoa_sales_agent_contact_number');
+            $table->integer('hoa_sales_agent_status')->default(1);
             $table->string('hoa_sales_agent_supervisor');
             $table->softDeletes();
             $table->timestamps();

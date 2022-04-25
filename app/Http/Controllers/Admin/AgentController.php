@@ -73,4 +73,14 @@ class AgentController extends Controller
         $agent->delete();
         return response('',204);
     }
+
+    public function change_status($id)
+    {
+        $subdivision = Agent::find($id);
+        $subdivision->hoa_sales_agent_status === 1 ? $subdivision->update(['hoa_sales_agent_status' => 0])
+            :  $subdivision->update([
+            'hoa_sales_agent_status' => 1
+        ]);
+        return response('', 204);
+    }
 }
