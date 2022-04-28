@@ -8,6 +8,8 @@ use App\Http\Resources\Admin\ShowEmailResource;
 use App\Models\Subdivision;
 use App\Http\Resources\Admin\SubdivisionResource;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 
 class SubdivisionController extends Controller
 {
@@ -24,21 +26,21 @@ class SubdivisionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\Admin\SubdivisionRequest  $request
+     * @param \App\Http\Requests\Admin\SubdivisionRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(SubdivisionRequest $request,Subdivision $subdivision)
+    public function store(SubdivisionRequest $request, Subdivision $subdivision)
     {
         $data = $request->validated();
         $request = $subdivision->create($data);
-         return $request;
+        return $request;
 
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Subdivision  $subdivision
+     * @param \App\Models\Subdivision $subdivision
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -50,8 +52,8 @@ class SubdivisionController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Admin\SubdivisionRequest  $request
-     * @param  \App\Models\Subdivision  $subdivision
+     * @param \App\Http\Requests\Admin\SubdivisionRequest $request
+     * @param \App\Models\Subdivision $subdivision
      * @return \Illuminate\Http\Response
      */
     public function update(SubdivisionRequest $request, $id)
@@ -66,7 +68,7 @@ class SubdivisionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Subdivision  $subdivision
+     * @param \App\Models\Subdivision $subdivision
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -76,17 +78,45 @@ class SubdivisionController extends Controller
         return response('', 204);
     }
 
-    public function show_email(){
-        $user = User::select('id','hoa_member_lname','hoa_member_fname','hoa_member_mname')->get();
+    public function search_subdivision(){
+        $data = \Request::get('find');
+        if($data !==""){
+            $subdivision = Subdivision::where('hoa_subd_name','like','%'.$data.'%')
+                ->orWhere('hoa_subd_contact_person','%'.$data.'%')
+                ->paginate(10);
+            $subdivision->appends(['find'=>$data]);
+        }else{
+            $subdivision = Subdivision::paginate(10);
+        }
+        return SubdivisionResource::collection($subdivision);
+    }
+
+    public function show_email()
+    {
+        $user = User::paginate(50);
         return ShowEmailResource::collection($user);
     }
+
     public function change_status($id)
     {
         $subdivision = Subdivision::find($id);
         $subdivision->hoa_subd_status === 1 ? $subdivision->update(['hoa_subd_status' => 0])
-            :  $subdivision->update([
+            : $subdivision->update([
             'hoa_subd_status' => 1
         ]);
         return response('', 204);
     }
+
+    public function search_user()
+    {
+        $data = \Request::get('q');
+        $user = DB::table('users')->where('hoa_member_lname', 'Like', '%' . $data . '%')
+            ->orWhere('hoa_member_fname', 'Like', '%' . $data. '%')
+            ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ")
+            ->paginate(50);
+        return ShowEmailResource::collection($user);
+    }
+
+
+
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubdivisionRequest extends FormRequest
+class showDirectorUser extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class SubdivisionRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,13 +24,7 @@ class SubdivisionRequest extends FormRequest
     public function rules()
     {
         return [
-            'hoa_subd_name'=>'required',
-            'hoa_subd_area'=>'required',
-            'image' => 'nullable|string',
-            'hoa_subd_blocks'=>'required',
-            'hoa_subd_lots'=>'required',
-            'hoa_subd_contact_person'=>'required',
-            'hoa_subd_contact_number'=>'required'
+            //
         ];
     }
 }

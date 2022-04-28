@@ -74,6 +74,25 @@ class AgentController extends Controller
         return response('',204);
     }
 
+    public function search_agent()
+    {
+        $data = \Request::get('find');
+        if ($data !== "") {
+            $privilege = Agent::where(function ($query) use ($data) {
+                $query->where('hoa_sales_agent_fname', 'Like', '%' . $data. '%')
+                    ->orWhere('hoa_sales_agent_email','Like','%'.$data.'%')
+                    ->orWhere('hoa_sales_agent_lname','like','%'.$data.'%')
+                    ->orWhereRaw("concat(hoa_sales_agent_lname, ' ', hoa_sales_agent_fname) like '%$data%' ")
+                    ->orWhereRaw("concat(hoa_sales_agent_fname, ' ', hoa_sales_agent_lname) like '%$data%' ")
+                    ->paginate(50);
+            })->paginate(10);
+            $privilege->appends(['find' => $data]);
+        } else {
+            $privilege = Agent::paginate(10);
+        }
+        return AgentResource::collection($privilege);
+    }
+
     public function change_status($id)
     {
         $subdivision = Agent::find($id);

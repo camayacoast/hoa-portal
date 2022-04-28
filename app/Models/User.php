@@ -60,4 +60,8 @@ class User extends Authenticatable
     public function subdivisions(){
         return $this->morphToMany(Subdivision::class,'subdivisionable');
     }
+
+    public function director(){
+        return $this->hasMany(Director::class);
+    }
 }

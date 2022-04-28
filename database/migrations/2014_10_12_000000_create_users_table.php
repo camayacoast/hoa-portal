@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('hoa_member_fname');
             $table->string('hoa_member_mname')->nullable();
             $table->string('hoa_member_suffix')->nullable();
+//            $table->string('hoa_member_fullName');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('hoa_member_phone_num')->nullable();

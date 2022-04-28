@@ -27,6 +27,7 @@ class UpdateUserRequest extends FormRequest
             'hoa_member_lname' => 'required|string',
             'hoa_member_fname' => 'required|string',
             'hoa_member_mname' => '',
+            'hoa_member_fullName'=>'',
             'hoa_member_suffix' => '',
             'email' => 'required|string|email|unique:users,email,' . $this->id,
             'hoa_member_sms' => '',

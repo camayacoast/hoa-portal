@@ -9,13 +9,14 @@ use App\Http\Resources\Admin\PrivilegeResource;
 use App\Models\Privilege;
 use App\Models\Subdivision;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PrivilegeController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -25,8 +26,9 @@ class PrivilegeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param PrivilegeRequest $request
+     * @param Privilege $privilege
+     * @return Response
      */
     public function store(PrivilegeRequest $request,Privilege $privilege)
     {
@@ -41,8 +43,8 @@ class PrivilegeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Privilege  $privilege
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return PrivilegeResource
      */
     public function show($id)
     {
@@ -53,9 +55,9 @@ class PrivilegeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Privilege  $privilege
-     * @return \Illuminate\Http\Response
+     * @param PrivilegeRequest $request
+     * @param $id
+     * @return Response
      */
     public function update(PrivilegeRequest $request,$id)
     {
@@ -71,8 +73,8 @@ class PrivilegeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Privilege  $privilege
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return Response
      */
     public function destroy($id)
     {
@@ -80,6 +82,23 @@ class PrivilegeController extends Controller
         $privilege->delete();
         return response('', 204);
     }
+
+    public function search_privilege()
+    {
+        $data = \Request::get('find');
+        if ($data !== "") {
+            $privilege = Privilege::where(function ($query) use ($data) {
+                $query->where('hoa_privilege_package_name', 'Like', '%' . $data . '%')
+                    ->orWhere('hoa_privilege_package_category', 'Like', '%' . $data . '%');
+
+            })->paginate(10);
+            $privilege->appends(['find' => $data]);
+        } else {
+            $privilege = Privilege::paginate(10);
+        }
+        return PrivilegeResource::collection($privilege);
+    }
+
     public function change_status($id)
     {
         $privilege = Privilege::find($id);
