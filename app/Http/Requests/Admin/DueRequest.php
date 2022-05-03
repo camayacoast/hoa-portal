@@ -30,8 +30,8 @@ class DueRequest extends FormRequest
             'hoa_subd_dues_unit' => 'required',
             'hoa_subd_dues_start_date' => 'required',
             'hoa_subd_dues_end_date' => 'required',
-            'hoa_subd_dues_payment_target' => 'required',
-            'hoa_subd_dues_cutoff_date' => 'required',
+            'hoa_subd_dues_payment_target' => 'required|numeric|min:1|max:30',
+            'hoa_subd_dues_cutoff_date' => 'required|numeric|min:1|max:30',
             'schedule_id' => 'required',
             'hoa_subd_dues_modifiedby'=>''
         ];
