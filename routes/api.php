@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\DirectorController;
+use App\Http\Controllers\Admin\DueController;
 use App\Http\Controllers\Admin\PrivilegeController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\Member\RegistrationController;
@@ -64,6 +65,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/directors/search/user/', [SubdivisionController::class, 'search_user']);
         Route::get('/directors/show/user/{id}',[DirectorController::class,'show_user']);
 
+        //due routes
+        Route::get('/due/{id}/subdivision',[DueController::class,'index']);
+        Route::apiResource('/due',DueController::class)->except('index');
+        Route::get('/due/show/schedule/{id}',[DueController::class,'show_schedule']);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

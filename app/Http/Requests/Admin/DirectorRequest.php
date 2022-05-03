@@ -26,7 +26,7 @@ class DirectorRequest extends FormRequest
         return [
            'user_id'=>'required',
             'subdivision_id'=>'required',
-            'hoa_bod_desc'=>'required',
+            'hoa_bod_desc'=>'',
             'hoa_bod_position'=>'required',
             'hoa_bod_modifiedby'=>'',
             "image"=>''

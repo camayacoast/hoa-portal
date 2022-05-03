@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('directors', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('subdivision_id')->constrained();
-            $table->string('hoa_bod_desc')->nullable();
-            $table->string('hoa_bod_position');
-            $table->integer('hoa_bod_modifiedby');
+            $table->string('hoa_schedule_name');
+            $table->text('hoa_schedule_desc')->nullable();
+            $table->integer('hoa_schedule_modifiedby')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('directors');
+        Schema::dropIfExists('schedules');
     }
 };

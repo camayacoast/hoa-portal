@@ -5,10 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PrivilegeRequest;
 use App\Http\Resources\Admin\PrivilegeResource;
-
 use App\Models\Privilege;
-use App\Models\Subdivision;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class PrivilegeController extends Controller

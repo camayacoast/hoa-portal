@@ -20,7 +20,7 @@ class DirectorController extends Controller
      */
     public function index($id)
     {
-        return DirectorResource::collection(Director::where('subdivision_id',$id)->orderBy('id','DESC')->paginate(20));
+        return DirectorResource::collection(Director::with('user')->where('subdivision_id',$id)->orderBy('id','DESC')->paginate(20));
     }
 
     /**
@@ -72,6 +72,9 @@ class DirectorController extends Controller
         $director = Director::findOrFail($id);
         $data = $request->validated();
         // Check if image was given and save on local file system
+        if($data){
+            $data['hoa_bod_modifiedby'] = auth()->user()->id;
+        }
         if (isset($data['image'])) {
             $relativePath = $this->saveImage($data['image']);
             $data['image'] = $relativePath;
