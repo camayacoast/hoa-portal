@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('directors', function (Blueprint $table) {
-            $table->string('image',255);
+            $table->string('image',255)->nullable();
         });
     }
 

@@ -18,4 +18,8 @@ class Subdivision extends Model
     public function director(){
         return $this->hasOne(Director::class);
     }
+
+    public function lot(){
+        return $this->hasMany(Lot::class);
+    }
 }

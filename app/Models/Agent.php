@@ -10,4 +10,8 @@ class Agent extends Model
 {
     use HasFactory,SoftDeletes;
     protected $guarded = [];
+
+    public function lot(){
+        return $this->hasOne(Lot::class);
+    }
 }

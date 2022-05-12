@@ -29,7 +29,6 @@ class StoreUserRequest extends FormRequest
             'hoa_member_mname' => '',
             'hoa_member_suffix' => '',
             'email' => 'required|string|email|unique:users,email',
-//            'hoa_member_fullName'=>'',
             'hoa_member'=>'',
             'hoa_member_sms' => '',
             'hoa_member_ebill' => '',

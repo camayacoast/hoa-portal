@@ -64,4 +64,8 @@ class User extends Authenticatable
     public function director(){
         return $this->hasMany(Director::class);
     }
+
+    public function lot(){
+        return $this->hasOne(Lot::class);
+    }
 }

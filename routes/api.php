@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Member\RegistrationController;
 use App\Http\Controllers\Admin\SubdivisionController;
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\Member\LotController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +70,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/due/{id}/subdivision',[DueController::class,'index']);
         Route::apiResource('/due',DueController::class)->except('index');
         Route::get('/due/show/schedule/{id}',[DueController::class,'show_schedule']);
+
+        //lot routes
+        Route::get('/lot/{id}/member',[LotController::class,'index']);
+        Route::apiResource('/lot',LotController::class)->except('index');
+        Route::get('/lot/show/subdivision',[LotController::class,'show_subdivision']);
+        Route::get('/lot/show/agent',[LotController::class,'show_agent']);
+        Route::get('/lot/search/subdivision',[LotController::class,'search_subdivision']);
+
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

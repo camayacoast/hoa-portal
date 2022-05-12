@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('subdivision_id')->constrained();
             $table->string('hoa_bod_desc')->nullable();
-            $table->string('hoa_bod_position');
+            $table->string('hoa_bod_position')->nullable();
             $table->integer('hoa_bod_modifiedby');
             $table->softDeletes();
             $table->timestamps();
