@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -67,5 +70,28 @@ class User extends Authenticatable
 
     public function lot(){
         return $this->hasOne(Lot::class);
+    }
+
+    public function document(){
+        return $this->hasOne(Document::class);
+    }
+
+//    public function getFullNameAttribute()
+//    {
+//        return ucfirst($this->hoa_member_fname) . ' ' . ucfirst($this->hoa_member_mname);
+//    }
+
+    protected function fullName() : Attribute{
+        return new Attribute(
+            get:fn($value,$attributes) => $attributes['hoa_member_fname'].' '. $attributes['hoa_member_mname'].' '.$attributes['hoa_member_lname']
+
+        );
+
+}
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url= 'http://localhost:3000/reset-password/'.$token;
+        $this->notify(new ResetPasswordNotification($url));
     }
 }

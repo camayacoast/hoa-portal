@@ -3,15 +3,16 @@
 use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\DirectorController;
 use App\Http\Controllers\Admin\DueController;
+use App\Http\Controllers\Admin\Member\DocumentController;
+use App\Http\Controllers\Admin\Member\FileController;
 use App\Http\Controllers\Admin\PrivilegeController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\Member\RegistrationController;
 use App\Http\Controllers\Admin\SubdivisionController;
 use App\Http\Controllers\AuthController;
 
-use App\Http\Controllers\Member\LotController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\Member\LotController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -78,12 +79,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/lot/show/agent',[LotController::class,'show_agent']);
         Route::get('/lot/search/subdivision',[LotController::class,'search_subdivision']);
 
+        //password_reset
+        Route::post('forget-password',[RegistrationController::class,'submit_forget_password_form']);
+
+        //member documents routes
+        Route::get('/document/{id}/member',[DocumentController::class,'index']);
+        Route::apiResource('document',DocumentController::class);
+        Route::delete('/file/{id}',[DocumentController::class,'deleteFile']);
     });
+
+
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 
-
+Route::post('/reset-password', [RegistrationController::class,'submit_reset_password_form']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

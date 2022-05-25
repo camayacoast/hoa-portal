@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('hoa_member_lname');
-            $table->string('hoa_member_fname');
+            $table->string('hoa_member_lname')->index();
+            $table->string('hoa_member_fname')->index();
             $table->string('hoa_member_mname')->nullable();
             $table->string('hoa_member_suffix')->nullable();
 //            $table->string('hoa_member_fullName');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->index();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('hoa_member_phone_num')->nullable();
             $table->integer('hoa_admin')->default(0);

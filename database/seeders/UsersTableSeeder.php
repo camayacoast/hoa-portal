@@ -15,8 +15,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::truncate();
-        $user->create([
+        User::create([
             'hoa_member_lname'=>'Admin',
             'hoa_member_fname'=>'Admin',
             'hoa_member_mname'=>'Admin',
