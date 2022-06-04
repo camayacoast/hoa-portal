@@ -51,7 +51,7 @@ class DocumentController extends Controller
                     $relativePath  = $this->saveImage($file);
                     $dataFile = $relativePath;
                     $file = new File();
-                    $file->document_id = $requestDocument->id;;
+                    $file->document_id = $requestDocument->id;
                     $file->filenames = $dataFile;
                     $file->save();
                 }
@@ -102,7 +102,7 @@ class DocumentController extends Controller
                     $relativePath  = $this->saveImage($file);
                     $dataFile = $relativePath;
                     $file = new File();
-                    $file->document_id = $document->id;;
+                    $file->document_id = $document->id;
                     $file->filenames = $dataFile;
                     $file->save();
                 }
@@ -148,7 +148,7 @@ class DocumentController extends Controller
     private function saveImage($image)
     {
         // Check if image is valid base64 string
-        if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+        if (preg_match('/^data:image\/(\w+);base64,/', $image, $type) || preg_match('/^data:application\/(\w+);base64,/', $image, $type)) {
             // Take out the base64 encoded text without mime type
             $image = substr($image, strpos($image, ',') + 1);
             // Get file extension

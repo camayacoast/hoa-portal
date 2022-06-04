@@ -13,17 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('billings', function (Blueprint $table) {
+        Schema::create('cards', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('hoa_subd_lot');
-            $table->decimal('hoa_billing_total_cost');
-            $table->date('hoa_billing_due_date');
-            $table->date('hoa_billing_generated_date');
-            $table->string('hoa_billing_status')->index();
-            $table->string('hoa_billing_period')->nullable();
+            $table->string('hoa_rfid_num');
+            $table->string('hoa_rfid_semnox_num');
+            $table->integer('hoa_rfid_reg_privilege_load');
+            $table->integer('hoa_rfid_reg_status')->default(1);
+            $table->integer('hoa_rfid_reg_modified');
             $table->softDeletes();
-            $table->integer('created_by');
             $table->timestamps();
         });
     }
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('billings');
+        Schema::dropIfExists('cards');
     }
 };

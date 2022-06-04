@@ -78,7 +78,7 @@ class AgentController extends Controller
     {
         $data = \Request::get('find');
         if ($data !== "") {
-            $privilege = Agent::where(function ($query) use ($data) {
+            $privilege = Agent::orderBy('id', 'DESC')->where(function ($query) use ($data) {
                 $query->where('hoa_sales_agent_fname', 'Like', '%' . $data. '%')
                     ->orWhere('hoa_sales_agent_email','Like','%'.$data.'%')
                     ->orWhere('hoa_sales_agent_lname','like','%'.$data.'%')
@@ -88,7 +88,7 @@ class AgentController extends Controller
             })->paginate(10);
             $privilege->appends(['find' => $data]);
         } else {
-            $privilege = Agent::paginate(10);
+            $privilege = Agent::orderBy('id', 'DESC')->paginate(10);
         }
         return AgentResource::collection($privilege);
     }

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('subdivisions', function (Blueprint $table) {
             $table->id();
-            $table->string('hoa_subd_name')->index();
+            $table->string('hoa_subd_name')->nullable()->index();
             $table->integer('hoa_subd_area')->nullable();
             $table->integer('hoa_subd_blocks')->nullable();
             $table->integer('hoa_subd_lots')->nullable();

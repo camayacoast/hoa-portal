@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Admin;
+namespace App\Http\Resources\Admin\Member;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ShowEmailResource extends JsonResource
+class PaymentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,9 +14,6 @@ class ShowEmailResource extends JsonResource
      */
     public function toArray($request)
     {
-        return[
-            'id'=>$this->id,
-            'hoa_member_name'=>$this->full_name,
-        ];
+        return parent::toArray($request);
     }
 }

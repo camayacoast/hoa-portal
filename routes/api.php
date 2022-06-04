@@ -3,8 +3,10 @@
 use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\DirectorController;
 use App\Http\Controllers\Admin\DueController;
+use App\Http\Controllers\Admin\Member\AnnouncementController;
+use App\Http\Controllers\Admin\Member\CardController;
 use App\Http\Controllers\Admin\Member\DocumentController;
-use App\Http\Controllers\Admin\Member\FileController;
+use App\Http\Controllers\Admin\Member\TransactionController;
 use App\Http\Controllers\Admin\PrivilegeController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\Member\RegistrationController;
@@ -12,6 +14,7 @@ use App\Http\Controllers\Admin\SubdivisionController;
 use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\Admin\Member\LotController;
+
 
 
 /*
@@ -86,6 +89,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/document/{id}/member',[DocumentController::class,'index']);
         Route::apiResource('document',DocumentController::class);
         Route::delete('/file/{id}',[DocumentController::class,'deleteFile']);
+
+
+
+        //announcement routes
+        Route::apiResource('/announcement',AnnouncementController::class);
+        Route::get('/announcement/fullstory/{id}',[AnnouncementController::class,'showStory']);
+        Route::put('/announcement/updateStory/{id}',[AnnouncementController::class,'updateStory']);
+
+        //rfid routes
+        Route::apiResource('/rfid',CardController::class);
+        Route::get('/rfid/search/data',[CardController::class,'search_rfid']);
+
+        //privilege transaction
+        Route::get('/transaction/{id}/rfid',[TransactionController::class,'index']);
+        Route::apiResource('/transaction',TransactionController::class)->only('delete','store');
     });
 
 

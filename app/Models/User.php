@@ -89,6 +89,10 @@ class User extends Authenticatable
 
 }
 
+    public function card(){
+        return $this->hasOne(Card::class);
+    }
+
     public function sendPasswordResetNotification($token)
     {
         $url= 'http://localhost:3000/reset-password/'.$token;

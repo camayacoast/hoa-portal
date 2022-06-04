@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\Member;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BillingRequest extends FormRequest
+class AnnouncementRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,12 @@ class BillingRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'=>'required',
-            'hoa_subd_lot'=>'required',
+            'hoa_event_notices_title'=>'required',
+            'hoa_event_notices_desc'=>'required',
+            'hoa_event_notices_type'=>'required',
+            'hoa_event_notices_photo'=>'required',
+            'hoa_event_notices_modifiedby'=>'',
+            'subdivision_id'=>''
         ];
     }
 }

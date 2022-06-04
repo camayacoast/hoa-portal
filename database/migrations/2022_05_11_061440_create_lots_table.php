@@ -18,11 +18,12 @@ return new class extends Migration
             $table->foreignId('subdivision_id')->constrained();
             $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('agent_id')->nullable()->constrained();
-            $table->integer('hoa_subd_lot_block')->unique();
-            $table->integer('hoa_subd_lot_num')->unique();
+            $table->integer('hoa_subd_lot_block');
+            $table->integer('hoa_subd_lot_num');
             $table->integer('hoa_subd_lot_area');
-            $table->integer('hoa_subd_lot_house_num')->unique();
-            $table->string('hoa_subd_lot_street_name');
+            $table->string('unique_lot')->unique();
+            $table->integer('hoa_subd_lot_house_num')->nullable();
+            $table->string('hoa_subd_lot_street_name')->nullable();
             $table->integer('hoa_subd_lot_createdby');
             $table->softDeletes();
             $table->timestamps();

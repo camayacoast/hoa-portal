@@ -3,21 +3,19 @@
 namespace App\Http\Controllers\Admin\Member;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Member\BillingRequest;
-use App\Http\Resources\Admin\Member\BillingResource;
-use App\Models\Billing;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
-class BillingController extends Controller
+class PaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index()
     {
-        return BillingResource::collection(Billing::where('user_id',$id)->orderBy('id','DESC')->paginate(10));
+        //
     }
 
     /**
@@ -26,33 +24,30 @@ class BillingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(BillingRequest $request,Billing $billing)
+    public function store(Request $request)
     {
-        $data = $request->validated();
-        $request = $billing->create($data);
-        return $request;
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Billing  $billing
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Payment $payment)
     {
-        $billing = Billing::findOrFail($id);
-        return new BillingResource($billing);
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Billing  $billing
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Billing $billing)
+    public function update(Request $request, Payment $payment)
     {
         //
     }
@@ -60,10 +55,10 @@ class BillingController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Billing  $billing
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Billing $billing)
+    public function destroy(Payment $payment)
     {
         //
     }

@@ -11,7 +11,14 @@ class Subdivision extends Model
     use HasFactory,SoftDeletes;
     protected $guarded = [];
 
+    public function announcement(){
+        return $this->belongsTo(Announcement::class);
+    }
     public function users(){
+        return $this->morphedByMany(User::class,'subdivisionable');
+    }
+
+    public function announcements(){
         return $this->morphedByMany(User::class,'subdivisionable');
     }
 
