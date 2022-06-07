@@ -29,7 +29,8 @@ class CardRequest extends FormRequest
             'hoa_rfid_semnox_num'=>'required',
             'hoa_rfid_reg_privilege_load'=>'required',
             'hoa_rfid_reg_status'=>'required',
-            'hoa_rfid_reg_modified'=>''
+            'hoa_rfid_reg_modified'=>'',
+
         ];
     }
 }

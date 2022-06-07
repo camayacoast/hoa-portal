@@ -20,7 +20,7 @@ class DirectorController extends Controller
      */
     public function index($id)
     {
-        return DirectorResource::collection(Director::with('user')->where('subdivision_id',$id)->orderBy('id','DESC')->paginate(20));
+        return DirectorResource::collection(Director::with('user')->whereNotNull('hoa_bod_position')->where('subdivision_id',$id)->orderBy('id','DESC')->paginate(20));
     }
 
     /**

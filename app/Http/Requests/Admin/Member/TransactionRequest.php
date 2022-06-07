@@ -29,7 +29,8 @@ class TransactionRequest extends FormRequest
             'hoa_privilege_transaction_amount'=>'required',
             'hoa_privilege_booking_num'=>'required',
             'hoa_privilege_transaction_type'=>'required',
-            'card_id'=>'required'
+            'card_id'=>'required',
+            'hoa_transaction'=>''
         ];
     }
 }
