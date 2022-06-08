@@ -76,10 +76,9 @@ class User extends Authenticatable
         return $this->hasOne(Document::class);
     }
 
-//    public function getFullNameAttribute()
-//    {
-//        return ucfirst($this->hoa_member_fname) . ' ' . ucfirst($this->hoa_member_mname);
-//    }
+    public function autogate(){
+        return $this->hasOne(User::class);
+    }
 
     protected function fullName() : Attribute{
         return new Attribute(
