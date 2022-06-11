@@ -77,7 +77,7 @@ class User extends Authenticatable
     }
 
     public function autogate(){
-        return $this->hasOne(User::class);
+        return $this->hasOne(Autogate::class);
     }
 
     protected function fullName() : Attribute{
@@ -92,6 +92,9 @@ class User extends Authenticatable
         return $this->hasOne(Card::class);
     }
 
+    public function subdivision_lot(){
+        return $this->lot()->with('subdivision')->where('hoa_subd_lot_default','=', 1);
+    }
     public function sendPasswordResetNotification($token)
     {
         $url= 'http://localhost:3000/reset-password/'.$token;

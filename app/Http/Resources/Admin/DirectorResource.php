@@ -19,6 +19,7 @@ class DirectorResource extends JsonResource
             'id'=>$this->id,
             'user_id'=>$this->user_id,
             'subdivision_id'=>$this->id,
+            'fullName'=>$this->user->full_name,
 //            'fullName'=>$this->user->hoa_member_lname.' '.$this->user->hoa_member_fname.' '.$this->user->hoa_member_mname,
             'hoa_bod_desc'=>$this->hoa_bod_desc,
             'hoa_bod_position'=>$this->hoa_bod_position,

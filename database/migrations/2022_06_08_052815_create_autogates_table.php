@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('autogates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('autogate_template_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('template_id')->nullable()->constrained();
             $table->string('hoa_autogate_member_name');
             $table->string('hoa_autogate_subdivision_name');
             $table->date('hoa_autogate_start');

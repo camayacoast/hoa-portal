@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('hoa_subd_lot_house_num')->nullable();
             $table->string('hoa_subd_lot_street_name')->nullable();
             $table->integer('hoa_subd_lot_createdby');
+            $table->integer('hoa_subd_lot_default')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

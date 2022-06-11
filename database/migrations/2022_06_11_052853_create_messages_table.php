@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('autogate_templates', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->string('hoa_autogate_template_name');
-            $table->string('hoa_autogate_template_title');
-            $table->string('hoa_autogate_template_message');
-            $table->integer('hoa_autogate_template_modifiedby');
+            $table->foreignId('template_id')->constrained();
+            $table->text('hoa_autogate_template_message');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('autogate_templates');
+        Schema::dropIfExists('messages');
     }
 };

@@ -39,9 +39,11 @@ class LotController extends Controller
                 $data['hoa_subd_lot_createdby'] = auth()->user()->id;
             }
             $newLot = $lot->create($data);
-            $request = Director::create([
+            $request = Director::updateOrcreate([
                 'user_id'=>$newLot->user_id,
+            ],[
                 'subdivision_id'=>$newLot->subdivision_id,
+                'user_id'=>$newLot->user_id,
                 'hoa_bod_modifiedby'=>auth()->user()->id
             ]);
             return $request;

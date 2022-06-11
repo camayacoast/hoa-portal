@@ -4,8 +4,10 @@ use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\DirectorController;
 use App\Http\Controllers\Admin\DueController;
 use App\Http\Controllers\Admin\Member\AnnouncementController;
+use App\Http\Controllers\Admin\Member\AutogateController;
 use App\Http\Controllers\Admin\Member\CardController;
 use App\Http\Controllers\Admin\Member\DocumentController;
+use App\Http\Controllers\Admin\Member\TemplateController;
 use App\Http\Controllers\Admin\Member\TransactionController;
 use App\Http\Controllers\Admin\PrivilegeController;
 use App\Http\Controllers\Admin\UsersController;
@@ -104,6 +106,15 @@ Route::middleware('auth:sanctum')->group(function () {
         //privilege transaction
         Route::get('/transaction/{id}/rfid',[TransactionController::class,'index']);
         Route::apiResource('/transaction',TransactionController::class)->only('delete','store');
+
+        //autogate
+        Route::apiResource('/autogate',AutogateController::class);
+        Route::get('/autogate/search/data',[AutogateController::class,'search_autogate']);
+        Route::get('/autogate/templates/data',[AutogateController::class,'template']);
+        Route::get('/autogate/user/subdivision',[AutogateController::class,'user_subdivision']);
+
+        //autogate template
+        Route::apiResource('/template',TemplateController::class);
     });
 
 

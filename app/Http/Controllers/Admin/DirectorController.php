@@ -20,7 +20,15 @@ class DirectorController extends Controller
      */
     public function index($id)
     {
-        return DirectorResource::collection(Director::with('user')->whereNotNull('hoa_bod_position')->where('subdivision_id',$id)->orderBy('id','DESC')->paginate(20));
+        return DirectorResource::collection(Director::with('user')
+            ->whereNotNull('hoa_bod_position')
+            ->where('subdivision_id',$id)
+            ->whereHas('user',function ($q){
+                $q->where('hoa_member_status',1);
+            })
+            ->orderBy('id','DESC')
+            ->paginate(20));
+
     }
 
     /**
@@ -43,7 +51,9 @@ class DirectorController extends Controller
             $relativePath  = $this->saveImage($data['image']);
             $data['image'] = $relativePath;
         }
-        $request = $director->create($data);
+        $request = $director->updateOrcreate([
+            'user_id'=>$data['user_id']
+        ],$data);
         return $request;
     }
 
@@ -110,7 +120,12 @@ class DirectorController extends Controller
 
     public function show_user($id)
     {
-        $user = Director::with('user')->where('subdivision_id',$id)->paginate(50);
+        $user = Director::with('user')
+            ->where('subdivision_id',$id)
+            ->whereHas('user',function ($q){
+                $q->where('hoa_member_status',1);
+            })
+            ->paginate(50);
         return ShowDirectorUserResource::collection($user);
     }
 

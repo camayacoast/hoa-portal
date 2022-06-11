@@ -163,12 +163,12 @@ class RegistrationController extends Controller
 
         if ($status == Password::PASSWORD_RESET) {
             return response([
-                'message'=> 'Password reset successfully'
+                'template'=> 'Password reset successfully'
             ]);
         }
 
         return response([
-            'message'=> __($status)
+            'template'=> __($status)
         ], 500);
     }
 }
