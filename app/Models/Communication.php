@@ -4,15 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Schedule extends Model
+class Communication extends Model
 {
-    use HasFactory,SoftDeletes;
-
-    public function due(){
-        return $this->hasMany(Due::class);
-    }
+    use HasFactory;
+    protected $guarded = [];
 
     public function email(){
         return $this->hasOne(Email::class);

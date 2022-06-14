@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Admin;
+namespace App\Http\Resources\Admin\Member;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ShowEmailResource extends JsonResource
+class EmailTemplate extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +16,7 @@ class ShowEmailResource extends JsonResource
     {
         return[
             'id'=>$this->id,
-            'hoa_member_name'=>$this->full_name,
-            'email'=>$this->email
+            'template_name'=>$this->hoa_comm_template_name
         ];
     }
 }

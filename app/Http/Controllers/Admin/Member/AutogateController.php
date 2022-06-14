@@ -89,17 +89,17 @@ class AutogateController extends Controller
     {
         $data = \Request::get('find');
         if ($data !== "") {
-            $user = Autogate::where(function ($query) use ($data) {
+            $autogate = Autogate::where(function ($query) use ($data) {
                 $query->where('hoa_autogate_member_name', 'Like', '%' . $data . '%')
                     ->orWhere('user_id', 'Like', '%' . $data . '%')
                     ->orWhere('hoa_autogate_subdivision_name','Like','%'.$data.'%');
 
             })->paginate(10);
-            $user->appends(['find' => $data]);
+            $autogate->appends(['find' => $data]);
         } else {
-            $user = User::paginate(10);
+            $autogate = Autogate::orderBy('id','DESC')->paginate(10);
         }
-        return AutogateResource::collection($user);
+        return AutogateResource::collection($autogate);
     }
 
     public function user_subdivision()

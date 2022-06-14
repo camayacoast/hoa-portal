@@ -80,7 +80,7 @@ class DueController extends Controller
         return response('',204);
     }
 
-    public function show_schedule($id){
+    public function show_schedule(){
         $schedule = Schedule::paginate(50);
         return ScheduleResource::collection($schedule);
     }

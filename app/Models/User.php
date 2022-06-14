@@ -80,6 +80,10 @@ class User extends Authenticatable
         return $this->hasOne(Autogate::class);
     }
 
+    public function email(){
+        return $this->hasOne(Email::class);
+    }
+
     protected function fullName() : Attribute{
         return new Attribute(
             get:fn($value,$attributes) => $attributes['hoa_member_fname'].' '. $attributes['hoa_member_mname'].' '.$attributes['hoa_member_lname']

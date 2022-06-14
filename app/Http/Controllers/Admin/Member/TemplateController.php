@@ -105,8 +105,25 @@ class TemplateController extends Controller
         $template = Template::findOrFail($id);
         DB::transaction(function() use ($template){
             $template->message()->delete();
+            $template->autogate()->delete();
             $template->delete();
             return response('',204);
         });
+    }
+
+    public function search_template()
+    {
+        $data = \Request::get('find');
+        if ($data !== "") {
+            $template = Template::where(function ($query) use ($data) {
+                $query->where('hoa_autogate_template_name', 'Like', '%' . $data . '%')
+                    ->orWhere('hoa_autogate_template_title', 'Like', '%' . $data . '%');
+
+            })->paginate(10);
+            $template->appends(['find' => $data]);
+        } else {
+            $autogate = Template::orderBy('id','DESC')->paginate(10);
+        }
+        return TemplateResource::collection($template);
     }
 }

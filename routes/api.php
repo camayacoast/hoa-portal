@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\DueController;
 use App\Http\Controllers\Admin\Member\AnnouncementController;
 use App\Http\Controllers\Admin\Member\AutogateController;
 use App\Http\Controllers\Admin\Member\CardController;
+use App\Http\Controllers\Admin\Member\CommunicationController;
 use App\Http\Controllers\Admin\Member\DocumentController;
+use App\Http\Controllers\Admin\Member\EmailController;
 use App\Http\Controllers\Admin\Member\TemplateController;
 use App\Http\Controllers\Admin\Member\TransactionController;
 use App\Http\Controllers\Admin\PrivilegeController;
@@ -75,7 +77,7 @@ Route::middleware('auth:sanctum')->group(function () {
         //due routes
         Route::get('/due/{id}/subdivision',[DueController::class,'index']);
         Route::apiResource('/due',DueController::class)->except('index');
-        Route::get('/due/show/schedule/{id}',[DueController::class,'show_schedule']);
+        Route::get('/due/show/schedule',[DueController::class,'show_schedule']);
 
         //lot routes
         Route::get('/lot/{id}/member',[LotController::class,'index']);
@@ -115,6 +117,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
         //autogate template
         Route::apiResource('/template',TemplateController::class);
+        Route::get('/template/search/data',[TemplateController::class,'search_template']);
+
+        //email
+        Route::apiResource('/email',EmailController::class);
+        Route::get('/email/search/data',[EmailController::class,'search_email']);
+        Route::get('/email/templates/data',[EmailController::class,'communication']);
+
+        //communication/email template
+        Route::apiResource('/communication',CommunicationController::class);
+        Route::get('/communication/search/data',[CommunicationController::class,'search_communication']);
     });
 
 
