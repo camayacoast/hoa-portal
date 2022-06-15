@@ -42,7 +42,7 @@ class DueRequest extends FormRequest
     public function message()
     {
         return [
-            'schedule_id.required'=>'the hoa subd dues recurrent field was required'
+            'schedule_id.required'=>'the hoa subd dues_fees recurrent field was required'
         ];
     }
 }

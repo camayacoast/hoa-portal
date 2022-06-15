@@ -130,6 +130,22 @@ class AnnouncementController extends Controller
         });
     }
 
+    public function search_announcement()
+    {
+        $data = \Request::get('find');
+        if ($data !== "") {
+            $announcement = Announcement::orderBy('id','DESC')->where(function ($query) use ($data) {
+                $query->where('hoa_event_notices_title', 'Like', '%' . $data . '%')
+                    ->orWhere('hoa_event_notices_type', 'Like', '%' . $data . '%');
+
+            })->paginate(10);
+            $announcement->appends(['find' => $data]);
+        } else {
+            $announcement = Announcement::orderBy('id','DESC')->paginate(10);
+        }
+        return AnnouncementResource::collection($announcement);
+    }
+
     public function showStory($id){
         $announcement = Announcement::findOrFail($id);
         return new AnnouncementResource($announcement);

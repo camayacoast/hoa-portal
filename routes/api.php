@@ -8,9 +8,12 @@ use App\Http\Controllers\Admin\Member\AutogateController;
 use App\Http\Controllers\Admin\Member\CardController;
 use App\Http\Controllers\Admin\Member\CommunicationController;
 use App\Http\Controllers\Admin\Member\DocumentController;
+use App\Http\Controllers\Admin\Member\DueFeeController;
 use App\Http\Controllers\Admin\Member\EmailController;
+use App\Http\Controllers\Admin\Member\FeeController;
 use App\Http\Controllers\Admin\Member\TemplateController;
 use App\Http\Controllers\Admin\Member\TransactionController;
+use App\Http\Controllers\Admin\NavigationController;
 use App\Http\Controllers\Admin\PrivilegeController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\Member\RegistrationController;
@@ -37,8 +40,13 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+    //show users
+
     //hoa admin routes
     Route::group(['prefix' => 'admin', 'middleware' => 'hoa_admin'], function () {
+
+        //show user login
+        Route::get('/navigation',NavigationController::class);
 
         //member routes
         Route::apiResource('/member', RegistrationController::class);
@@ -100,6 +108,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('/announcement',AnnouncementController::class);
         Route::get('/announcement/fullstory/{id}',[AnnouncementController::class,'showStory']);
         Route::put('/announcement/updateStory/{id}',[AnnouncementController::class,'updateStory']);
+        Route::get('/announcement/search/data',[AnnouncementController::class,'search_announcement']);
 
         //rfid routes
         Route::apiResource('/rfid',CardController::class);
@@ -127,6 +136,16 @@ Route::middleware('auth:sanctum')->group(function () {
         //communication/email template
         Route::apiResource('/communication',CommunicationController::class);
         Route::get('/communication/search/data',[CommunicationController::class,'search_communication']);
+
+        //duefee
+        Route::get('duefee',[DueFeeController::class,'index']);
+        Route::get('/due/subdivision/lot/{id}',[DueFeeController::class,'subdivision_fees']);
+        Route::get('/duefee/search/data',[DueFeeController::class,'search_due_fee']);
+
+        //other fee
+        Route::apiResource('/fee',FeeController::class)->except('index');
+        Route::get('/fee/{data}/lot',[FeeController::class,'index']);
+        Route::get('/fee/search/data',[FeeController::class,'search_fee']);
     });
 
 

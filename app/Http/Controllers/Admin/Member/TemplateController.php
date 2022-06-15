@@ -122,7 +122,7 @@ class TemplateController extends Controller
             })->paginate(10);
             $template->appends(['find' => $data]);
         } else {
-            $autogate = Template::orderBy('id','DESC')->paginate(10);
+            $template = Template::orderBy('id','DESC')->paginate(10);
         }
         return TemplateResource::collection($template);
     }

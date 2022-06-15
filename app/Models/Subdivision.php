@@ -29,4 +29,8 @@ class Subdivision extends Model
     public function lot(){
         return $this->hasMany(Lot::class);
     }
+
+    public function due(){
+        return $this->hasMany(Due::class);
+    }
 }

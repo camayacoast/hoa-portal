@@ -93,7 +93,7 @@ class SubdivisionController extends Controller
 
     public function show_email()
     {
-        $user = User::paginate(50);
+        $user = User::where('hoa_admin','=',1)->where('hoa_member_status','=',1)->paginate(50);
         return ShowEmailResource::collection($user);
     }
 

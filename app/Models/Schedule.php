@@ -17,4 +17,8 @@ class Schedule extends Model
     public function email(){
         return $this->hasOne(Email::class);
     }
+
+    public function fee(){
+        return $this->hasOne(Fee::class);
+    }
 }
