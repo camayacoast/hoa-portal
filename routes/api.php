@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AgentController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DirectorController;
 use App\Http\Controllers\Admin\DueController;
 use App\Http\Controllers\Admin\Member\AnnouncementController;
@@ -45,8 +46,11 @@ Route::middleware('auth:sanctum')->group(function () {
     //hoa admin routes
     Route::group(['prefix' => 'admin', 'middleware' => 'hoa_admin'], function () {
 
-        //show user login
+        //show user login on navagation
         Route::get('/navigation',NavigationController::class);
+
+        //dashboard controller
+        Route::get('/dashboard',DashboardController::class);
 
         //member routes
         Route::apiResource('/member', RegistrationController::class);

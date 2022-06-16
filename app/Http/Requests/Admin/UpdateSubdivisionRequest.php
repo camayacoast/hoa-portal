@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubdivisionRequest extends FormRequest
+class UpdateSubdivisionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,12 +19,12 @@ class SubdivisionRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules()
     {
         return [
-            'hoa_subd_name'=>'required|unique:subdivisions,hoa_subd_name',
+            'hoa_subd_name'=>'required|unique:subdivisions,hoa_subd_name,'.$this->id,
             'hoa_subd_area'=>'required',
             'image' => 'nullable|string',
             'hoa_subd_blocks'=>'required',

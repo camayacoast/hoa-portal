@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SubdivisionRequest;
+use App\Http\Requests\Admin\UpdateSubdivisionRequest;
 use App\Http\Resources\Admin\ShowEmailResource;
 use App\Models\Subdivision;
 use App\Http\Resources\Admin\SubdivisionResource;
@@ -56,7 +57,7 @@ class SubdivisionController extends Controller
      * @param \App\Models\Subdivision $subdivision
      * @return \Illuminate\Http\Response
      */
-    public function update(SubdivisionRequest $request, $id)
+    public function update(UpdateSubdivisionRequest $request, $id)
     {
         $subdivision = Subdivision::findOrFail($id);
         $data = $request->validated();
@@ -74,8 +75,12 @@ class SubdivisionController extends Controller
     public function destroy($id)
     {
         $subdivision = Subdivision::findOrFail($id);
-        $subdivision->delete();
-        return response('', 204);
+        if(count($subdivision->lot) == 0){
+            $subdivision->delete();
+            return response('', 204);
+
+        }
+        return response($subdivision->lot,500);
     }
 
     public function search_subdivision(){
