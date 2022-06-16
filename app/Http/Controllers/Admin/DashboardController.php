@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Card;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,11 +21,13 @@ class DashboardController extends Controller
         $fromDate = Carbon::now()->subMonth()->startOfMonth()->toDateString();
         $tillDate = Carbon::now()->subMonth()->endOfMonth()->toDateString();
         $user = User::where('hoa_member','=',1)->count();
+        $card = Card::count();
         $userPerMonth = User::where('created_at','>=', Carbon::now()->subMonth()->toDateTimeString())->count();
 
         return response()->json([
             'user'=>$user,
-            'userPerMonth'=>$userPerMonth
+            'userPerMonth'=>$userPerMonth,
+            'card'=>$card
         ]);
     }
 }
