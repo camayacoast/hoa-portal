@@ -27,7 +27,7 @@ class PrivilegeRequest extends FormRequest
             'hoa_privilege_package_name'=>'required',
             'hoa_privilege_package_desc'=>'required',
             'hoa_privilege_package_category'=>'required',
-            'hoa_privilege_package_cost'=>'required|numeric|max:1',
+            'hoa_privilege_package_cost'=>'required|numeric|min:1',
             'hoa_privilege_package_createdby'=>''
         ];
     }

@@ -80,7 +80,7 @@ class SubdivisionController extends Controller
             return response('', 204);
 
         }
-        return response($subdivision->lot,500);
+        return response('Unable to delete',500);
     }
 
     public function search_subdivision(){

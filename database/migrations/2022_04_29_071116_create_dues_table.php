@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('hoa_subd_dues_cutoff_date');
             $table->integer('hoa_subd_dues_payment_target');
             $table->foreignId('schedule_id')->constrained();
+            $table->integer('hoa_subd_dues_status')->default(1);
             $table->integer('hoa_subd_dues_modifiedby');
             $table->softDeletes();
             $table->timestamps();

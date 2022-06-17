@@ -17,7 +17,8 @@ class UserSubdivisionResource extends JsonResource
         return [
             'id'=>$this->id,
             'fullName'=>$this->full_name,
-            'subdivision'=>$this->subdivision_lot->subdivision->hoa_subd_name
+            'email'=>$this->email,
+            'subdivision'=>$this->lot->subdivision->hoa_subd_name
         ];
     }
 }

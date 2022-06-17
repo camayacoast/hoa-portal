@@ -89,8 +89,11 @@ class RegistrationController extends Controller
     public function destroy($id)
     {
         $users = User::find($id);
+        if(count($users->lot) == 0 || count($users->document)){
         $users->delete();
         return response('', 204);
+        }
+        return response('Unable to delete',500);
     }
 
     public function search_member()

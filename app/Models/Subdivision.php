@@ -33,4 +33,6 @@ class Subdivision extends Model
     public function due(){
         return $this->hasMany(Due::class);
     }
+
+
 }

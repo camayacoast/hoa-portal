@@ -99,9 +99,12 @@ class LotController extends Controller
     {
         DB::transaction(function () use ($id){
             $lot = Lot::findOrFail($id);
-            $director = Director::where('user_id',$lot->user_id)->delete();
-            $lot->delete();
-            return response('',204);
+            if(count($lot->fee) == 0 ) {
+                $director = Director::where('user_id', $lot->user_id)->delete();
+                $lot->delete();
+                return response('', 204);
+            }
+            return response('Unable to delete',500);
         });
 
     }

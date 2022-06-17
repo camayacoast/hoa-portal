@@ -104,7 +104,12 @@ class AutogateController extends Controller
 
     public function user_subdivision()
     {
-        $user = User::with('lot')->where('hoa_member_status','=',1)->paginate(50);
+        $user = User::with('lot')
+            ->where('hoa_member_status','=',1)
+            ->whereHas('lot',function ($query){
+                $query->where('hoa_subd_lot_default','=', 1);
+            })
+            ->paginate(50);
         return UserSubdivisionResource::collection($user);
     }
 

@@ -51,9 +51,11 @@ class DirectorController extends Controller
             $relativePath  = $this->saveImage($data['image']);
             $data['image'] = $relativePath;
         }
-        $request = $director->updateOrcreate([
-            'user_id'=>$data['user_id']
-        ],$data);
+        $request = $director->upsert(
+            $data,
+            ['user_id'=>$data['user_id']],
+            $data
+        );
         return $request;
     }
 

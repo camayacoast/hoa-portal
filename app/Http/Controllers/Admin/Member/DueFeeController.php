@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\Member\DueFeeResource;
 use App\Http\Resources\Admin\Member\LotSubdivisionDuesResource;
 use App\Http\Resources\Admin\Member\SubdivisionDuesResource;
+use App\Models\Due;
 use App\Models\Lot;
 use App\Models\Subdivision;
 use Illuminate\Http\Request;
@@ -21,8 +22,13 @@ class DueFeeController extends Controller
     }
 
     public function subdivision_fees($id){
-        $lot = Lot::with('subdivision')->where('id',$id)->first();
-       return new LotSubdivisionDuesResource($lot);
+//        $lot = Lot::with('subdivision')->where('id',$id)->first();
+        $lot = Lot::findOrFail($id);
+        $subdivision = Subdivision::findOrFail($lot->subdivision_id);
+        $due = Due::where('subdivision_id',$subdivision->id)
+            ->where('hoa_subd_dues_status','=',1)
+            ->get();
+       return SubdivisionDuesResource::collection($due);
     }
     public function search_due_fee()
     {

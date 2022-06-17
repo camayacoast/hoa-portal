@@ -24,7 +24,8 @@ class DueResource extends JsonResource
             'hoa_subd_dues_payment_target'=>$this->hoa_subd_dues_payment_target,
             'hoa_subd_dues_cutoff_date'=>$this->hoa_subd_dues_cutoff_date,
             'schedule_id'=>$this->schedule->id,
-            'hoa_schedule_name'=>$this->schedule->hoa_schedule_name
+            'hoa_schedule_name'=>$this->schedule->hoa_schedule_name,
+            'hoa_subd_dues_status'=>$this->hoa_subd_dues_status
         ];
     }
 }

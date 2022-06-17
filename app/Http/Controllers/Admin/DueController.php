@@ -84,4 +84,14 @@ class DueController extends Controller
         $schedule = Schedule::paginate(50);
         return ScheduleResource::collection($schedule);
     }
+
+    public function change_status($id)
+    {
+        $due = Due::find($id);
+        $due->hoa_subd_dues_status === 1 ? $due->update(['hoa_subd_dues_status' => 0])
+            : $due->update([
+            'hoa_subd_dues_status' => 1
+        ]);
+        return response('', 204);
+    }
 }

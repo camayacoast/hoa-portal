@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin\Member;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Member\CardRequest;
 use App\Http\Resources\Admin\Member\CardResource;
+use App\Http\Resources\Admin\ShowEmailResource;
 use App\Models\Card;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CardController extends Controller
@@ -94,5 +96,11 @@ class CardController extends Controller
             $rfid = Card::with('user')->orderBy('id', 'DESC')->paginate(10);
         }
         return CardResource::collection($rfid);
+    }
+
+    public function show_email()
+    {
+        $user = User::where('hoa_member_status','=',1)->paginate(50);
+        return ShowEmailResource::collection($user);
     }
 }

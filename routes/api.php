@@ -90,6 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/due/{id}/subdivision',[DueController::class,'index']);
         Route::apiResource('/due',DueController::class)->except('index');
         Route::get('/due/show/schedule',[DueController::class,'show_schedule']);
+        Route::put('/due/change/status/{id}', [DueController::class, 'change_status']);
 
         //lot routes
         Route::get('/lot/{id}/member',[LotController::class,'index']);
@@ -117,6 +118,7 @@ Route::middleware('auth:sanctum')->group(function () {
         //rfid routes
         Route::apiResource('/rfid',CardController::class);
         Route::get('/rfid/search/data',[CardController::class,'search_rfid']);
+        Route::get('/rfid/show/email',[CardController::class,'show_email']);
 
         //privilege transaction
         Route::get('/transaction/{id}/rfid',[TransactionController::class,'index']);

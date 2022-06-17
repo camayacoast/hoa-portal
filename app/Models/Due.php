@@ -15,6 +15,9 @@ class Due extends Model
         return $this->belongsTo(Schedule::class);
     }
 
+//    public function scopeDues($query){
+//        return $query->where('hoa_subd_dues_status','=',1);
+//    }
     public function subdivision(){
         return $this->belongsTo(Subdivision::class);
     }
