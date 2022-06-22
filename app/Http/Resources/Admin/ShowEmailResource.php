@@ -17,7 +17,8 @@ class ShowEmailResource extends JsonResource
         return[
             'id'=>$this->id,
             'hoa_member_name'=>$this->full_name,
-            'email'=>$this->email
+            'email'=>$this->email,
+            'contactNumber'=>$this->hoa_member_phone_num
         ];
     }
 }

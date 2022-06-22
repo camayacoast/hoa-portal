@@ -101,8 +101,8 @@ class AnnouncementController extends Controller
                 'hoa_event_notices_modifiedby'=>$data['hoa_event_notices_modifiedby']
             ]);
             if($data['subdivision_id']){
+                $announcement->subdivisions()->detach();
                 foreach($data['subdivision_id'] as $subdId){
-                    $announcement->subdivisions()->detach($subdId);
                     $announcement->subdivisions()->attach($subdId);
                 }
             }

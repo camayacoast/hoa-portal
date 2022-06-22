@@ -7,19 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ResetPasswordNotification extends Notification implements ShouldQueue
+class SendingEmailNotification extends Notification
 {
     use Queueable;
-    public $url;
-
+    private $email;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(string $url)
+    public function __construct($email)
     {
-        $this->url = $url;
+        $this->email = $email;
     }
 
     /**
@@ -42,8 +41,8 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('You are receiving this email because we received a password reset request for your account.')
-                    ->action('Reset Password', $this->url)
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
                     ->line('Thank you for using our application!');
     }
 

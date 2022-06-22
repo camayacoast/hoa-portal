@@ -7,8 +7,10 @@ use App\Http\Requests\Admin\DirectorRequest;
 use App\Http\Resources\Admin\DirectorResource;
 use App\Http\Resources\Admin\showDirectorUserResource;
 use App\Models\Director;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -41,22 +43,43 @@ class DirectorController extends Controller
      */
     public function store(DirectorRequest $request,Director $director)
     {
-        $data = $request->validated();
+        DB::transaction(function() use ($request,$director){
+            $data = $request->validated();
 
-        if($data){
-            $data['hoa_bod_modifiedby'] = auth()->user()->id;
-        }
+            if($data){
+                $data['hoa_bod_modifiedby'] = auth()->user()->id;
+            }
 
-        if (isset($data['image'])) {
-            $relativePath  = $this->saveImage($data['image']);
-            $data['image'] = $relativePath;
-        }
-        $request = $director->upsert(
-            $data,
-            ['user_id'=>$data['user_id']],
-            $data
-        );
-        return $request;
+            if (isset($data['image'])) {
+                $relativePath  = $this->saveImage($data['image']);
+                $data['image'] = $relativePath;
+            }
+            $request = $director->upsert(
+                [
+                    'user_id'=>$data['user_id'],
+                    'subdivision_id'=>$data['subdivision_id'],
+                    'hoa_bod_desc'=>$data['hoa_bod_desc'],
+                    'hoa_bod_position'=>$data['hoa_bod_position'],
+                    'hoa_bod_modifiedby'=>$data['hoa_bod_modifiedby'],
+                    'image'=>$data['image']
+                    ],
+                ['user_id'=>$data['user_id']],
+                [
+                    'user_id'=>$data['user_id'],
+                    'subdivision_id'=>$data['subdivision_id'],
+                    'hoa_bod_desc'=>$data['hoa_bod_desc'],
+                    'hoa_bod_position'=>$data['hoa_bod_position'],
+                    'hoa_bod_modifiedby'=>$data['hoa_bod_modifiedby'],
+                    'image'=>$data['image']
+                ]
+            );
+            $user = User::findOrfail($data['user_id']);
+            $user->update([
+                'hoa_access_type'=>$data['hoa_access_type']
+            ]);
+            return $request;
+        });
+
     }
 
     /**
@@ -81,25 +104,40 @@ class DirectorController extends Controller
      */
     public function update(DirectorRequest $request, $id)
     {
-        $director = Director::findOrFail($id);
-        $data = $request->validated();
-        // Check if image was given and save on local file system
-        if($data){
-            $data['hoa_bod_modifiedby'] = auth()->user()->id;
-        }
-        if (isset($data['image'])) {
-            $relativePath = $this->saveImage($data['image']);
-            $data['image'] = $relativePath;
-
-            // If there is an old image, delete it
-            if ($director->image) {
-                $absolutePath = public_path($director->image);
-                File::delete($absolutePath);
+        DB::transaction(function() use ($request,$id){
+            $director = Director::findOrFail($id);
+            $data = $request->validated();
+            // Check if image was given and save on local file system
+            if($data){
+                $data['hoa_bod_modifiedby'] = auth()->user()->id;
             }
-        }
+            if (isset($data['image'])) {
+                $relativePath = $this->saveImage($data['image']);
+                $data['image'] = $relativePath;
 
-        $request = $director->update($data);
-        return $request;
+                // If there is an old image, delete it
+                if ($director->image) {
+                    $absolutePath = public_path($director->image);
+                    File::delete($absolutePath);
+                }
+            }
+
+            $request = $director->update( [
+                'user_id'=>$data['user_id'],
+                'subdivision_id'=>$data['subdivision_id'],
+                'hoa_bod_desc'=>$data['hoa_bod_desc'],
+                'hoa_bod_position'=>$data['hoa_bod_position'],
+                'hoa_bod_modifiedby'=>$data['hoa_bod_modifiedby'],
+                'image'=>$data['image']
+            ]);
+
+            $user = User::findOrfail($data['user_id']);
+            $user->update([
+                'hoa_access_type'=>$data['hoa_access_type']
+            ]);
+            return $request;
+        });
+
     }
 
     /**

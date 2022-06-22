@@ -31,8 +31,8 @@ class UpdateLotRequest extends FormRequest
             'unique_lot'=>'required|unique:lots,unique_lot,'.$this->id,
             'hoa_subd_lot_area'=>'required',
             'hoa_subd_lot_num'=>'required',
-            'hoa_subd_lot_house_num'=>'required',
-            'hoa_subd_lot_street_name'=>'required'
+            'hoa_subd_lot_house_num'=>'',
+            'hoa_subd_lot_street_name'=>''
         ];
     }
 

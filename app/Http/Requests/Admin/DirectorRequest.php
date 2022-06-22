@@ -29,7 +29,8 @@ class DirectorRequest extends FormRequest
             'hoa_bod_desc'=>'',
             'hoa_bod_position'=>'required',
             'hoa_bod_modifiedby'=>'',
-            "image"=>''
+            "image"=>'',
+            'hoa_access_type'=>''
         ];
     }
 

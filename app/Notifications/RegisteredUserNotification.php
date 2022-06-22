@@ -7,19 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ResetPasswordNotification extends Notification implements ShouldQueue
+class RegisteredUserNotification extends Notification
 {
     use Queueable;
-    public $url;
-
+    private $user;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(string $url)
+    public function __construct($user)
     {
-        $this->url = $url;
+        $this->user = $user;
     }
 
     /**
@@ -42,8 +41,10 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('You are receiving this email because we received a password reset request for your account.')
-                    ->action('Reset Password', $this->url)
+                    ->line('Hi, '.$notifiable->full_name)
+                    ->line('this is your email and password for HOA Portal')
+                    ->line('Email: '.$this->user->email)
+                    ->line('Password: Camaya123')
                     ->line('Thank you for using our application!');
     }
 

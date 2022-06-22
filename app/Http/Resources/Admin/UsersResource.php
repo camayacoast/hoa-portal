@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Admin;
 
+use App\Http\Resources\Admin\Member\ShowSubdivisionResource;
+use App\Http\Resources\Admin\Member\UserLotSubdivisionResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UsersResource extends JsonResource
@@ -23,11 +25,13 @@ class UsersResource extends JsonResource
             'hoa_member_position'=>$this->hoa_member_position,
             'hoa_admin'=>$this->hoa_admin,
             'hoa_member'=>$this->hoa_member,
+            'hoa_access_type'=>$this->hoa_access_type,
             'email'=>$this->email,
             'hoa_member_suffix'=>$this->hoa_member_suffix,
             'hoa_member_ebill'=>$this->hoa_member_ebill,
             'hoa_member_sms'=>$this->hoa_member_sms,
             'hoa_member_status'=>$this->hoa_member_status,
+            'subdivision'=>ShowSubdivisionResource::collection($this->subdivisions)
         ];
     }
 }

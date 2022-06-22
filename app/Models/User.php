@@ -25,6 +25,8 @@ class User extends Authenticatable
         'hoa_member_lname',
         'hoa_member_fname',
         'hoa_member_mname',
+        'suffix',
+        'hoa_access_type',
         'email',
         'hoa_member_phone_num',
         'hoa_admin',
@@ -69,7 +71,7 @@ class User extends Authenticatable
     }
 
     public function lot(){
-        return $this->hasOne(Lot::class);
+        return $this->hasMany(Lot::class);
     }
 
     public function document(){

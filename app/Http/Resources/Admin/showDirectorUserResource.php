@@ -17,7 +17,7 @@ class showDirectorUserResource extends JsonResource
         return [
             'id'=>$this->id,
             'user_id'=>$this->user->id,
-            'hoa_member_name'=>$this->user->hoa_member_lname.' '.$this->user->hoa_member_fname.' '.$this->user->hoa_member_mname,
+            'hoa_member_name'=>$this->user->full_name,
         ];
     }
 }

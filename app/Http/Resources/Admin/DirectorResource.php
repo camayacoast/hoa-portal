@@ -24,6 +24,7 @@ class DirectorResource extends JsonResource
             'hoa_bod_desc'=>$this->hoa_bod_desc,
             'hoa_bod_position'=>$this->hoa_bod_position,
             'image_url'=>$this->image ? URL::to($this->image) : null,
+            'hoa_access_type'=>$this->user->hoa_access_type
         ];
     }
 }

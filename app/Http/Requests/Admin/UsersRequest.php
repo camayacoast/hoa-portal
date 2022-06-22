@@ -24,9 +24,11 @@ class UsersRequest extends FormRequest
     public function rules()
     {
         return [
-            'hoa_member'=>'required',
+            'hoa_member'=>'',
             'hoa_admin'=>'required',
             'hoa_access_type'=>'required',
+            'id'=>'required',
+            'subdivision_id'=>'required',
         ];
     }
 }

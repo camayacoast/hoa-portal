@@ -4,7 +4,7 @@ namespace App\Http\Resources\Admin\Member;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserSubdivisionResource extends JsonResource
+class UserLotSubdivisionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,11 +14,8 @@ class UserSubdivisionResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id'=>$this->id,
-            'fullName'=>$this->full_name,
-            'email'=>$this->email,
-            'subdivision'=>UserLotSubdivisionResource::collection($this->lot)
+        return[
+            'name'=>$this->subdivision->hoa_subd_name
         ];
     }
 }

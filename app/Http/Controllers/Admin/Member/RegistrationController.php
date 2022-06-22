@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Admin\Member;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendRegisteredUserNotification;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\Admin\Member\RegistrationResource;
+use App\Notifications\RegisteredUserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -42,8 +45,9 @@ class RegistrationController extends Controller
 //            $data['hoa_member_fullName'] = $data['hoa_member_lname'].' '.$data['hoa_member_fname'].' '.$data['hoa_member_mname'].' '.$data['hoa_member_suffix'];
             $data['password'] = bcrypt('Camaya123');
         }
-        $request = $user->create($data);
-        return $request;
+        $users = $user->create($data);
+        SendRegisteredUserNotification::dispatch($users);
+        return $users;
     }
 
     /**
@@ -88,8 +92,9 @@ class RegistrationController extends Controller
      */
     public function destroy($id)
     {
-        $users = User::find($id);
-        if(count($users->lot) == 0 || count($users->document)){
+        $users = User::findOrFail($id);
+
+        if(count($users->lot)==0){
         $users->delete();
         return response('', 204);
         }
