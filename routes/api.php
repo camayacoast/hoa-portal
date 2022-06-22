@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('/user',UsersController::class)->except('create','store');
         Route::get('/user/show/email',[UsersController::class,'show_email']);
         Route::put('/user/add/user/{id}',[UsersController::class,'add_user']);
-        Route::get('/user/get/subdivision',[UsersController::class,'show_subdivision']);
+        Route::get('/user/show/subdivision',[UsersController::class,'show_subdivision']);
         Route::put('/user/change/status/{id}', [UsersController::class, 'change_status']);
         Route::get('/user/search/data',[UsersController::class,'search_user']);
 
