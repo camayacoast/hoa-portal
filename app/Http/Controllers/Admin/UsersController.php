@@ -137,7 +137,7 @@ class UsersController extends Controller
         return UsersResource::collection($user);
     }
 
-    public function get_subdivision(){
+    public function show_subdivision(){
         $subdivision = Subdivision::orderBy('hoa_subd_name','ASC')->paginate(50);
         return ShowSubdivisionResource::collection($subdivision);
     }
