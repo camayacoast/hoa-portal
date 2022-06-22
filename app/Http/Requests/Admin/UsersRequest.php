@@ -25,7 +25,7 @@ class UsersRequest extends FormRequest
     {
         return [
             'hoa_member'=>'',
-            'hoa_admin'=>'required',
+            'hoa_admin'=>'',
             'hoa_access_type'=>'required',
             'id'=>'required',
             'subdivision_id'=>'required',

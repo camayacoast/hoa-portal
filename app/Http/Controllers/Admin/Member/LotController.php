@@ -41,7 +41,7 @@ class LotController extends Controller
             }
             $newLot = $lot->create($data);
             $user = User::findOrFail($newLot->user_id);
-            $user->subdivisions->attach($newLot->subdivision_id);
+            $user->subdivisions()->attach($newLot->subdivision_id);
             $request = Director::updateOrcreate([
                 'user_id'=>$newLot->user_id,
             ],[

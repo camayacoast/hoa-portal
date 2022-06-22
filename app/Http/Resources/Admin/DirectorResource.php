@@ -23,7 +23,7 @@ class DirectorResource extends JsonResource
 //            'fullName'=>$this->user->hoa_member_lname.' '.$this->user->hoa_member_fname.' '.$this->user->hoa_member_mname,
             'hoa_bod_desc'=>$this->hoa_bod_desc,
             'hoa_bod_position'=>$this->hoa_bod_position,
-            'image_url'=>$this->image ? URL::to($this->image) : null,
+            'image'=>$this->image ? URL::to($this->image) : null,
             'hoa_access_type'=>$this->user->hoa_access_type
         ];
     }

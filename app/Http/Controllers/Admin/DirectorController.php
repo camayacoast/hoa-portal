@@ -54,6 +54,11 @@ class DirectorController extends Controller
                 $relativePath  = $this->saveImage($data['image']);
                 $data['image'] = $relativePath;
             }
+            $user = User::findOrfail($data['user_id']);
+            $user->update([
+                'hoa_admin'=>1,
+                'hoa_access_type'=>$data['hoa_access_type']
+            ]);
             $request = $director->upsert(
                 [
                     'user_id'=>$data['user_id'],
@@ -73,10 +78,6 @@ class DirectorController extends Controller
                     'image'=>$data['image']
                 ]
             );
-            $user = User::findOrfail($data['user_id']);
-            $user->update([
-                'hoa_access_type'=>$data['hoa_access_type']
-            ]);
             return $request;
         });
 
@@ -133,6 +134,7 @@ class DirectorController extends Controller
 
             $user = User::findOrfail($data['user_id']);
             $user->update([
+                'hoa_admin'=>1,
                 'hoa_access_type'=>$data['hoa_access_type']
             ]);
             return $request;
@@ -189,7 +191,8 @@ class DirectorController extends Controller
                 throw new Exception('base64_decode failed');
             }
         } else {
-            throw new Exception('did not match data URI with image data');
+//            throw new Exception('did not match data URI with image data');
+            return $image;
         }
 
         $dir = 'images/';

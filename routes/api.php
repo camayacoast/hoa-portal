@@ -58,10 +58,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/member/search/data',[RegistrationController::class,'search_member']);
 
         //user management routes
-        Route::apiResource('/user',UsersController::class)->except('create');
+        Route::apiResource('/user',UsersController::class)->except('create','store');
         Route::get('/user/show/email',[UsersController::class,'show_email']);
         Route::put('/user/add/user/{id}',[UsersController::class,'add_user']);
-        Route::get('/user/show/subdivision',[UsersController::class,'show_subdivision']);
+        Route::get('/user/get/subdivision',[UsersController::class,'show_subdivision']);
         Route::put('/user/change/status/{id}', [UsersController::class, 'change_status']);
         Route::get('/user/search/data',[UsersController::class,'search_user']);
 
