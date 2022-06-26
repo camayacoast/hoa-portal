@@ -22,6 +22,20 @@ class DirectorController extends Controller
      */
     public function index($id)
     {
+        $userid = auth()->user()->id;
+        $user = User::findOrFail($userid);
+        if($user->hoa_access_type === 2){
+            foreach ($user->subdivisions as $subdivision) {
+               return DirectorResource::collection(Director::with('user')
+                    ->whereNotNull('hoa_bod_position')
+                    ->where('subdivision_id',$subdivision->id)
+                    ->whereHas('user',function ($q){
+                        $q->where('hoa_member_status',1);
+                    })
+                    ->orderBy('id','DESC')
+                    ->paginate(20));
+            }
+        }
         return DirectorResource::collection(Director::with('user')
             ->whereNotNull('hoa_bod_position')
             ->where('subdivision_id',$id)
@@ -59,15 +73,7 @@ class DirectorController extends Controller
                 'hoa_admin'=>1,
                 'hoa_access_type'=>$data['hoa_access_type']
             ]);
-            $request = $director->upsert(
-                [
-                    'user_id'=>$data['user_id'],
-                    'subdivision_id'=>$data['subdivision_id'],
-                    'hoa_bod_desc'=>$data['hoa_bod_desc'],
-                    'hoa_bod_position'=>$data['hoa_bod_position'],
-                    'hoa_bod_modifiedby'=>$data['hoa_bod_modifiedby'],
-                    'image'=>$data['image']
-                    ],
+            $request = $director->updateOrCreate(
                 ['user_id'=>$data['user_id']],
                 [
                     'user_id'=>$data['user_id'],
@@ -165,7 +171,7 @@ class DirectorController extends Controller
         $user = Director::with('user')
             ->where('subdivision_id',$id)
             ->whereHas('user',function ($q){
-                $q->where('hoa_member_status',1);
+                $q->where('hoa_member_status',1)->where('hoa_access_type','=',0)->orWhere('hoa_access_type','=',2);
             })
             ->paginate(50);
         return ShowDirectorUserResource::collection($user);

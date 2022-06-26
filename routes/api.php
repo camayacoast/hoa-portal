@@ -65,6 +65,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/user/change/status/{id}', [UsersController::class, 'change_status']);
         Route::get('/user/search/data',[UsersController::class,'search_user']);
 
+
+        //dropdown search
+        Route::get('/search/show/email/data',[UsersController::class,'search_show_email']);
+        Route::get('/search/show/subdivision/data',[UsersController::class,'search_show_subdivision']);
+
         //subdivision routes
         Route::apiResource('/subdivision',SubdivisionController::class);
         Route::get('/subdivision/search/data',[SubdivisionController::class,'search_subdivision']);
@@ -125,7 +130,7 @@ Route::middleware('auth:sanctum')->group(function () {
         //privilege transaction
         Route::get('/transaction/{id}/rfid',[TransactionController::class,'index']);
         Route::apiResource('/transaction',TransactionController::class)->only('delete','store');
-
+        Route::get('/transaction/search/data',[TransactionController::class,'search_transaction']);
         //autogate
         Route::apiResource('/autogate',AutogateController::class);
         Route::get('/autogate/search/data',[AutogateController::class,'search_autogate']);

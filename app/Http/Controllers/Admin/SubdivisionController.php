@@ -21,6 +21,16 @@ class SubdivisionController extends Controller
      */
     public function index()
     {
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
+        if ($user->hoa_access_type === 2) {
+            foreach ($user->subdivisions as $subdivision) {
+                $data = SubdivisionResource::collection(
+                    Subdivision::where('id',$subdivision->id)
+                    ->paginate(10));
+            }
+            return $data;
+        }
         return SubdivisionResource::collection(Subdivision::orderBy('id', 'DESC')->paginate(10));
     }
 

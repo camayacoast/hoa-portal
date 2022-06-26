@@ -64,18 +64,21 @@ class TransactionController extends Controller
 
     }
 
-
-    public function show(Transaction $privilegeTransaction)
+    public function search_transaction()
     {
-        //
+        $data = \Request::get('find');
+        if ($data !== "") {
+            $transaction = Transaction::orderBy('id', 'DESC')
+                ->where('hoa_privilege_transaction_name','LIKE','%'.$data.'%')
+                ->orWhere('hoa_privilege_booking_num','LIKE','%'.$data.'%')
+                ->orWhere('hoa_privilege_transaction_type','LIKE','%'.$data.'%')
+                ->paginate(10);
+            $transaction->appends(['find' => $data]);
+        } else {
+            $transaction = Transaction::orderBy('id', 'DESC')->paginate(10);
+        }
+        return TransactionResource::collection($transaction);
     }
-
-
-    public function update(TransactionRequest $request, Transaction $privilegeTransaction)
-    {
-        //
-    }
-
 
     public function destroy($id)
     {

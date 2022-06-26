@@ -8,6 +8,7 @@ use App\Http\Resources\Admin\DueResource;
 use App\Http\Resources\Admin\ScheduleResource;
 use App\Models\Due;
 use App\Models\Schedule;
+use App\Models\User;
 use Illuminate\Validation\Validator;
 
 class DueController extends Controller
@@ -18,7 +19,17 @@ class DueController extends Controller
      */
     public function index($id)
     {
-        return DueResource::collection(Due::with('schedule')->where('subdivision_id',$id)->paginate(10));
+        $userid = auth()->user()->id;
+        $user = User::findOrFail($userid);
+        if($user->hoa_access_type === 2){
+            foreach ($user->subdivisions as $subdivision) {
+                $due = Due::with('schedule')
+                    ->where('subdivision_id',$subdivision->id)
+                    ->paginate(50);
+            }
+            return DueResource::collection($due);
+        }
+        return DueResource::collection(Due::with('schedule')->where('subdivision_id',$id)->paginate(50));
     }
 
     /**
