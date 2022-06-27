@@ -25,7 +25,7 @@ class DueFeeController extends Controller
 //        $lot = Lot::with('subdivision')->where('id',$id)->first();
         $lot = Lot::findOrFail($id);
         $subdivision = Subdivision::findOrFail($lot->subdivision_id);
-        $due = Due::where('subdivision_id',$subdivision->id)
+        $due = Due::with('subdivision')->where('subdivision_id',$subdivision->id)
             ->where('hoa_subd_dues_status','=',1)
             ->get();
        return SubdivisionDuesResource::collection($due);

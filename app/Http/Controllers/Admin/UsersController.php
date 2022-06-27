@@ -23,18 +23,20 @@ class UsersController extends Controller
     {
         $id = auth()->user()->id;
         $user = User::findOrFail($id);
+        $data = [];
         if ($user->hoa_access_type === 2) {
             foreach ($user->subdivisions as $subdivision) {
-                $data = UsersResource::collection(User::with('subdivisions')
-                    ->whereHas('subdivisions', function ($query) use ($subdivision) {
-                        $query->where('id', $subdivision->id);
-                    })
-                    ->orderBy('id', 'DESC')
-                    ->where('hoa_admin', '1')
-                    ->where('hoa_access_type', 2)
-                    ->paginate(10));
+                $data[] = $subdivision->id;
             }
-            return $data;
+            $datas = User::with('subdivisions')
+                ->where('hoa_admin', '1')
+                ->whereHas('subdivisions', function ($query) use ($data) {
+                    $query->whereIn('id', $data);
+                })
+                ->orderBy('id', 'DESC')
+                ->paginate(10);
+
+            return UsersResource::collection($datas);
         }
         return UsersResource::collection(User::with('subdivisions')->orderBy('id', 'DESC')->where('hoa_admin', '1')->paginate(10));
     }
@@ -144,21 +146,39 @@ class UsersController extends Controller
         return response('', 204);
     }
 
+    public function show_subdivision()
+    {
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
+        $datas = [];
+        if ($user->hoa_access_type === 2) {
+            foreach ($user->subdivisions as $subdivision) {
+                $datas[] = $subdivision->id;
+            }
+            $data = Subdivision::whereIn('id', $datas)->paginate(50);
+            return ShowSubdivisionResource::collection($data);
+        }
+        $subdivision = Subdivision::orderBy('hoa_subd_name', 'ASC')->paginate(50);
+        return ShowSubdivisionResource::collection($subdivision);
+    }
+
     public function show_email()
     {
         $id = auth()->user()->id;
         $user = User::findOrFail($id);
         if ($user->hoa_access_type === 2) {
+            $datas = [];
             foreach ($user->subdivisions as $subdivision) {
-                $data = ShowEmailResource::collection(User::with('subdivisions')
-                    ->whereHas('subdivisions', function ($query) use ($subdivision) {
-                        $query->where('id', $subdivision->id);
-                    })
-                    ->orderBy('id', 'DESC')
-                    ->where('hoa_member_status', 1)
-                    ->where('hoa_access_type', "!=",1)
-                    ->paginate(10));
+                $datas[] = $subdivision->id;
             }
+            $data = ShowEmailResource::collection(User::with('subdivisions')
+                ->whereHas('subdivisions', function ($query) use ($datas) {
+                    $query->whereIn('id', $datas);
+                })
+                ->orderBy('id', 'DESC')
+                ->where('hoa_member_status', 1)
+                ->where('hoa_access_type', "!=", 1)
+                ->paginate(10));
             return $data;
         }
         $user = User::where('hoa_member_status', 1)->paginate(10);
@@ -171,28 +191,19 @@ class UsersController extends Controller
         $id = auth()->user()->id;
         $dropdown = 1;
         $user = User::findOrFail($id);
-        //subdivision admin
+
         if ($user->hoa_access_type === 2) {
-            return $this->search_user_subdivision_admin($data, $user, $dropdown);
+            $datas = [];
+            foreach ($user->subdivisions as $subdivision) {
+                $datas[] = $subdivision->id;
+            }
+            return $this->search_user_subdivision_admin($data, $datas,  $dropdown);
         }
 
         //full admin
         return $this->search_user_full_admin($data, $dropdown);
     }
 
-    public function show_subdivision()
-    {
-        $id = auth()->user()->id;
-        $user = User::findOrFail($id);
-        if ($user->hoa_access_type === 2) {
-            foreach ($user->subdivisions as $subdivision) {
-                $data = Subdivision::where('id', $subdivision->id)->paginate(50);
-            }
-            return ShowSubdivisionResource::collection($data);
-        }
-        $subdivision = Subdivision::orderBy('hoa_subd_name', 'ASC')->paginate(50);
-        return ShowSubdivisionResource::collection($subdivision);
-    }
 
     public function search_show_email()
     {
@@ -209,83 +220,83 @@ class UsersController extends Controller
         return $this->search_user_full_admin($data, $dropdown);
     }
 
-    public function search_show_subdivision(){
+    public function search_show_subdivision()
+    {
         $data = \Request::get('find');
         $id = auth()->user()->id;
         $user = User::findOrFail($id);
         //subdivision admin
         if ($user->hoa_access_type === 2) {
-            return $this->search_subdivision_full_admin($data, $user);
+            $datas = [];
+            foreach ($user->subdivisions as $subdivision) {
+                $datas[] = $subdivision->id;
+            }
+            return $this->search_subdivision_subdivision_admin($data, $datas);
         }
         //full admin
         return $this->search_subdivision_full_admin($data);
     }
-    private function search_user_subdivision_admin($data, $user, $dropdown)
+
+    private function search_user_subdivision_admin($data, $datas,  $dropdown)
     {
 
         if ($dropdown === 1) {
+            //user search
             if ($data !== "") {
-                foreach ($user->subdivisions as $subdivision) {
-                    $user = User::with('subdivisions')
-                        ->orderBy('id', 'DESC')
-                        ->whereHas('subdivisions', function ($query) use ($subdivision) {
-                            $query->where('id', $subdivision->id);
-                        })
-
-                        ->where('hoa_admin', 1)
-                        ->where('hoa_access_type', 2)
-                        ->where(function ($query) use ($data) {
-                            $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
-                                ->orWhere('email', 'LIKE', '%' . $data . '%')
-                                ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
-                                ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
-
-                        })->paginate(10);
-                    $user->appends(['find' => $data]);
-                }
+                $user = User::with('subdivisions')
+                    ->orderBy('id', 'DESC')
+                    ->whereHas('subdivisions', function ($query) use ($datas) {
+                        $query->whereIn('id', $datas);
+                    })
+                    ->where('hoa_admin', 1)
+                    ->where('hoa_access_type', 2)
+                    ->where(function ($query) use ($data) {
+                        $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
+                            ->orWhere('email', 'LIKE', '%' . $data . '%')
+                            ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
+                            ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
+                    })->paginate(10);
+                $user->appends(['find' => $data]);
             } else {
-                foreach ($user->subdivisions as $subdivision) {
-                    $user = User::with('subdivisions')
-                        ->whereHas('subdivisions', function ($query) use ($subdivision) {
-                            $query->where('id', $subdivision->id);
-                        })
-                        ->orderBy('id', 'DESC')
-                        ->where('hoa_admin', '1')
-                        ->where('hoa_access_type', 2)
-                        ->paginate(10);
-                }
+                $user = User::with('subdivisions')
+                    ->whereHas('subdivisions', function ($query) use ($datas) {
+                        $query->whereIn('id', $datas);
+                    })
+                    ->orderBy('id', 'DESC')
+                    ->where('hoa_admin', '1')
+                    ->where('hoa_access_type', 2)
+                    ->paginate(10);
             }
             return UsersResource::collection($user);
         } else {
+            //search per show email
             if ($data !== "") {
-                foreach ($user->subdivisions as $subdivision) {
-                    $user = User::with('subdivisions')
-                        ->orderBy('id', 'DESC')
-                        ->whereHas('subdivisions', function ($query) use ($subdivision) {
-                            $query->where('id', $subdivision->id);
-                        })
-                        ->where('hoa_member', 1)
-                        ->where('hoa_access_type', 2)
-                        ->where(function ($query) use ($data) {
-                            $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
-                                ->orWhere('email', 'LIKE', '%' . $data . '%')
-                                ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
-                                ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
+                $user = User::with('subdivisions')
+                    ->orderBy('id', 'DESC')
+                    ->whereHas('subdivisions', function ($query) use ($datas) {
+                        $query->whereIn('id', $datas);
+                    })
+                    ->where('hoa_member', 1)
+                    ->where('hoa_access_type', 2)
+                    ->where(function ($query) use ($data) {
+                        $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
+                            ->orWhere('email', 'LIKE', '%' . $data . '%')
+                            ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
+                            ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
 
-                        })->paginate(10);
-                    $user->appends(['find' => $data]);
-                }
+                    })->paginate(10);
+                $user->appends(['find' => $data]);
             } else {
-                foreach ($user->subdivisions as $subdivision) {
-                    $user = User::with('subdivisions')
-                        ->whereHas('subdivisions', function ($query) use ($subdivision) {
-                            $query->where('id', $subdivision->id);
-                        })
-                        ->orderBy('id', 'DESC')
-                        ->where('hoa_member', '1')
-                        ->where('hoa_access_type', 2)
-                        ->paginate(10);
-                }
+
+                $user = User::with('subdivisions')
+                    ->whereHas('subdivisions', function ($query) use ($datas) {
+                        $query->whereIn('id', $datas);
+                    })
+                    ->orderBy('id', 'DESC')
+                    ->where('hoa_member', '1')
+                    ->where('hoa_access_type', 2)
+                    ->paginate(10);
+
             }
             return ShowEmailResource::collection($user);
         }
@@ -300,12 +311,12 @@ class UsersController extends Controller
                 $user = User::with('subdivisions')->orderBy('id', 'DESC')
                     ->where('hoa_admin', 1)
                     ->where(function ($query) use ($data) {
-                    $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
-                        ->orWhere('email', 'LIKE', '%' . $data . '%')
-                        ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
-                        ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
+                        $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
+                            ->orWhere('email', 'LIKE', '%' . $data . '%')
+                            ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
+                            ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
 
-                })->paginate(10);
+                    })->paginate(10);
                 $user->appends(['find' => $data]);
             } else {
                 $user = User::orderBy('id', 'DESC')->paginate(10);
@@ -315,12 +326,12 @@ class UsersController extends Controller
             if ($data !== "") {
                 $user = User::with('subdivisions')->orderBy('id', 'DESC')
                     ->where(function ($query) use ($data) {
-                    $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
-                        ->orWhere('email', 'LIKE', '%' . $data . '%')
-                        ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
-                        ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
+                        $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
+                            ->orWhere('email', 'LIKE', '%' . $data . '%')
+                            ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
+                            ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
 
-                })->paginate(10);
+                    })->paginate(10);
                 $user->appends(['find' => $data]);
             } else {
                 $user = User::orderBy('id', 'DESC')->paginate(10);
@@ -329,22 +340,18 @@ class UsersController extends Controller
         }
     }
 
-    private function search_subdivision_subdivision_admin($data, $user)
+    private function search_subdivision_subdivision_admin($data, $datas, $user)
     {
         if ($data !== "") {
-            foreach ($user->subdivisions as $subdivision) {
-                $subdivisionData = Subdivision::orderBy('id', 'DESC')
-                    ->where('id', $subdivision->id)
-                    ->where('hoa_subd_name', 'LIKE', '%' . $data . '%')
-                    ->paginate(10);
-                $subdivisionData->appends(['find' => $data]);
-            }
+            $subdivisionData = Subdivision::orderBy('id', 'DESC')
+                ->whereIn('id', $datas)
+                ->where('hoa_subd_name', 'LIKE', '%' . $data . '%')
+                ->paginate(10);
+            $subdivisionData->appends(['find' => $data]);
         } else {
-            foreach ($user->subdivisions as $subdivision) {
-                $subdivisionData = Subdivision::orderBy('id', 'DESC')
-                    ->where('id', $subdivision->id)
-                    ->paginate(10);
-            }
+            $subdivisionData = Subdivision::orderBy('id', 'DESC')
+                ->whereIn('id', $datas)
+                ->paginate(10);
         }
         return ShowSubdivisionResource::collection($subdivisionData);
 
@@ -360,6 +367,6 @@ class UsersController extends Controller
         } else {
             $subdivisionData = User::orderBy('id', 'DESC')->paginate(10);
         }
-            return ShowSubdivisionResource::collection($subdivisionData);
+        return ShowSubdivisionResource::collection($subdivisionData);
     }
 }

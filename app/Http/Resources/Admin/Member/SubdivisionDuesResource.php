@@ -14,9 +14,10 @@ class SubdivisionDuesResource extends JsonResource
      */
     public function toArray($request)
     {
+        $cost = $this->hoa_subd_dues_cost * $this->subdivision->hoa_subd_area;
         return[
             'item'=>$this->hoa_subd_dues_name,
-            'cost'=>$this->hoa_subd_dues_cost,
+            'cost'=>$cost,
             'scheudle'=>$this->schedule->hoa_schedule_name
         ];
     }

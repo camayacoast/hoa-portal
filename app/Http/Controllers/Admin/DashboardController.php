@@ -24,17 +24,27 @@ class DashboardController extends Controller
         $tillDate = Carbon::now()->subMonth()->endOfMonth()->toDateString();
         $id = auth()->user()->id;
         $user = User::findOrFail($id);
+        $data = [];
         if($user->hoa_access_type === 2){
             foreach ($user->subdivisions as $subdivision){
-                $userMember = Lot::select('subdivision_id')->where('subdivision_id','=',$subdivision->id)->count();
-                $userPerMonth = Lot::with(['user'=>function($query){
-                    $query->where('created_at','>=', Carbon::now()->subMonth()->toDateTimeString());
-                }])->count();
-                $users = Lot::select('user_id')->where('subdivision_id','=',$subdivision->id)->get();
+                $data[]=$subdivision->id;
+
             }
+            $userMember = Lot::select('subdivision_id')->whereIn('subdivision_id',$data)->count();
+
+            $userPerMonth = Lot::with(['user'=>function($query){
+                $query->where('created_at','>=', Carbon::now()->subMonth()->toDateTimeString());
+            }])
+                ->whereIn('subdivision_id',$data)
+                ->count();
+
+            $users = Lot::select('user_id')->whereIn('subdivision_id',$data)->get();
+
+            $cardId = [];
             foreach ($users as $userCard){
-                $card = Card::where('user_id',$userCard->user_id)->count();
+                $cardId[] = $userCard->user_id;
             }
+            $card = Card::whereIn('user_id',$cardId)->count();
 
 
 

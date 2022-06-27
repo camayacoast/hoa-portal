@@ -23,13 +23,15 @@ class SubdivisionController extends Controller
     {
         $id = auth()->user()->id;
         $user = User::findOrFail($id);
+        $data = [];
         if ($user->hoa_access_type === 2) {
             foreach ($user->subdivisions as $subdivision) {
-                $data = SubdivisionResource::collection(
-                    Subdivision::where('id',$subdivision->id)
-                    ->paginate(10));
+                $data[] = $subdivision->id;
             }
-            return $data;
+            return SubdivisionResource::collection(
+                Subdivision::whereIn('id',$data)
+                    ->orderBy('id', 'DESC')
+                    ->paginate(10));
         }
         return SubdivisionResource::collection(Subdivision::orderBy('id', 'DESC')->paginate(10));
     }
@@ -125,10 +127,16 @@ class SubdivisionController extends Controller
     public function search_user()
     {
         $data = \Request::get('q');
-        $user = DB::table('users')->where('hoa_member_lname', 'Like', '%' . $data . '%')
-            ->orWhere('hoa_member_fname', 'Like', '%' . $data. '%')
-            ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ")
-            ->paginate(50);
+        $user = User::orderBy('id','DESC')
+                    ->where('hoa_admin','=',1)
+                     ->where('hoa_member_status','=',1)
+                    ->where(function($query) use ($data){
+                        $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
+                            ->orWhere('email', 'LIKE', '%' . $data . '%')
+                            ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
+                            ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
+                    })
+                    ->paginate(50);
         return ShowEmailResource::collection($user);
     }
 

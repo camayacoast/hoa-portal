@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Member\AnnouncementRequest;
 use App\Http\Resources\Admin\Member\AnnouncementResource;
 use App\Models\Announcement;
 use App\Models\Subdivision;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +23,22 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
-        return AnnouncementResource::collection(Announcement::orderBy('id','DESC')->paginate(10));
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
+        $data = [];
+        if ($user->hoa_access_type === 2) {
+            foreach ($user->subdivisions as $subdivision) {
+                $data[] = $subdivision->id;
+            }
+            return AnnouncementResource::collection(
+                Announcement::with('subdivisions')
+                    ->whereHas('subdivisions',function ($query) use ($data){
+                        $query->whereIn('id',$data);
+                    })
+                    ->orderBy('id','DESC')
+                    ->paginate(10));
+        }
+        return AnnouncementResource::collection(Announcement::with('subdivisions')->orderBy('id','DESC')->paginate(10));
     }
 
     /**
@@ -133,17 +149,17 @@ class AnnouncementController extends Controller
     public function search_announcement()
     {
         $data = \Request::get('find');
-        if ($data !== "") {
-            $announcement = Announcement::orderBy('id','DESC')->where(function ($query) use ($data) {
-                $query->where('hoa_event_notices_title', 'Like', '%' . $data . '%')
-                    ->orWhere('hoa_event_notices_type', 'Like', '%' . $data . '%');
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
 
-            })->paginate(10);
-            $announcement->appends(['find' => $data]);
-        } else {
-            $announcement = Announcement::orderBy('id','DESC')->paginate(10);
+        if ($user->hoa_access_type === 2) {
+            $datas = [];
+            foreach ($user->subdivisions as $subdivision) {
+                $datas[] = $subdivision->id;
+            }
+            return $this->search_announcement_subdivision_admin($data,$datas);
         }
-        return AnnouncementResource::collection($announcement);
+        return $this->search_announcement_full_admin($data);
     }
 
     public function showStory($id){
@@ -197,4 +213,37 @@ class AnnouncementController extends Controller
 
         return $relativePath;
     }
+
+    private function search_announcement_subdivision_admin($data,$datas){
+        if ($data !== "") {
+            $announcement = Announcement::with('subdivisions')->orderBy('id','DESC')
+                ->whereHas('subdivisions',function ($query) use ($datas){
+                    $query->whereIn('id',$datas);
+                })
+                ->where(function ($query) use ($data) {
+                $query->where('hoa_event_notices_title', 'Like', '%' . $data . '%')
+                    ->orWhere('hoa_event_notices_type', 'Like', '%' . $data . '%');
+            })->paginate(10);
+            $announcement->appends(['find' => $data]);
+        } else {
+            $announcement = Announcement::orderBy('id','DESC')->paginate(10);
+        }
+        return AnnouncementResource::collection($announcement);
+    }
+
+    private function search_announcement_full_admin($data){
+        if ($data !== "") {
+            $announcement = Announcement::with('subdivisions')
+                ->orderBy('id','DESC')
+                ->where(function ($query) use ($data) {
+                    $query->where('hoa_event_notices_title', 'Like', '%' . $data . '%')
+                        ->orWhere('hoa_event_notices_type', 'Like', '%' . $data . '%');
+                })->paginate(10);
+            $announcement->appends(['find' => $data]);
+        } else {
+            $announcement = Announcement::orderBy('id','DESC')->paginate(10);
+        }
+        return AnnouncementResource::collection($announcement);
+    }
 }
+

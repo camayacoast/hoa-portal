@@ -19,16 +19,18 @@ class DueController extends Controller
      */
     public function index($id)
     {
-        $userid = auth()->user()->id;
-        $user = User::findOrFail($userid);
-        if($user->hoa_access_type === 2){
-            foreach ($user->subdivisions as $subdivision) {
-                $due = Due::with('schedule')
-                    ->where('subdivision_id',$subdivision->id)
-                    ->paginate(50);
-            }
-            return DueResource::collection($due);
-        }
+//        $userid = auth()->user()->id;
+//        $user = User::findOrFail($userid);
+//        $data = [];
+//        if($user->hoa_access_type === 2){
+//            foreach ($user->subdivisions as $subdivision) {
+//                $data[] = $subdivision->id;
+//            }
+//            $due = Due::with('schedule')
+//                ->whereIn('subdivision_id',$data)
+//                ->paginate(50);
+//            return DueResource::collection($due);
+//        }
         return DueResource::collection(Due::with('schedule')->where('subdivision_id',$id)->paginate(50));
     }
 

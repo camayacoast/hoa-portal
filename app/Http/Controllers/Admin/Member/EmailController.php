@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Member\EmailRequest;
 use App\Http\Resources\Admin\Member\EmailResource;
 use App\Http\Resources\Admin\Member\EmailTemplate;
+use App\Models\Card;
 use App\Models\Communication;
 use App\Models\Email;
+use App\Models\Lot;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -20,6 +22,22 @@ class EmailController extends Controller
      */
     public function index()
     {
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
+        $data = [];
+        if($user->hoa_access_type === 2) {
+            foreach ($user->subdivisions as $subdivision) {
+                $data[] = $subdivision->id;
+            }
+            $users = Lot::select('user_id')->whereIn('subdivision_id',$data)->get();
+
+            $userId = [];
+            foreach ($users as $userAnnouncement){
+                $userId[] = $userAnnouncement->user_id;
+            }
+            $announcement = Card::whereIn('user_id',$userId)->paginate(10);
+            return EmailResource::collection($announcement);
+        }
         return EmailResource::collection(Email::with('user','schedule')->orderBy('id','DESC')->paginate(10));
     }
 

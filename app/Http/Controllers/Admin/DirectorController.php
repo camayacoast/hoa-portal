@@ -22,20 +22,20 @@ class DirectorController extends Controller
      */
     public function index($id)
     {
-        $userid = auth()->user()->id;
-        $user = User::findOrFail($userid);
-        if($user->hoa_access_type === 2){
-            foreach ($user->subdivisions as $subdivision) {
-               return DirectorResource::collection(Director::with('user')
-                    ->whereNotNull('hoa_bod_position')
-                    ->where('subdivision_id',$subdivision->id)
-                    ->whereHas('user',function ($q){
-                        $q->where('hoa_member_status',1);
-                    })
-                    ->orderBy('id','DESC')
-                    ->paginate(20));
-            }
-        }
+//        $userid = auth()->user()->id;
+//        $user = User::findOrFail($userid);
+//        if($user->hoa_access_type === 2){
+//            foreach ($user->subdivisions as $subdivision) {
+//               return DirectorResource::collection(Director::with('user')
+//                    ->whereNotNull('hoa_bod_position')
+//                    ->where('subdivision_id',$subdivision->id)
+//                    ->whereHas('user',function ($q){
+//                        $q->where('hoa_member_status',1);
+//                    })
+//                    ->orderBy('id','DESC')
+//                    ->paginate(20));
+//            }
+//        }
         return DirectorResource::collection(Director::with('user')
             ->whereNotNull('hoa_bod_position')
             ->where('subdivision_id',$id)
