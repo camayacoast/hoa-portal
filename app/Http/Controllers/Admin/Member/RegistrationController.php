@@ -8,11 +8,9 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\Admin\Member\RegistrationResource;
-use App\Notifications\RegisteredUserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -27,7 +25,26 @@ class RegistrationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
+
     {
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
+        $data = [];
+        if ($user->hoa_access_type === 2) {
+            foreach ($user->subdivisions as $subdivision) {
+                $data[] = $subdivision->id;
+            }
+            $datas = User::with('subdivisions')
+                ->orderBy('id', 'DESC')
+                ->where('hoa_member', '1')
+                ->whereHas('subdivisions', function ($query) use ($data) {
+                    $query->whereIn('id', $data);
+                })
+                ->orderBy('id', 'DESC')
+                ->paginate(10);
+
+            return RegistrationResource::collection($datas);
+        }
         return RegistrationResource::collection(User::where('hoa_member', '1')->orderBy('id', 'DESC')->paginate(10));
     }
 
@@ -104,18 +121,20 @@ class RegistrationController extends Controller
     public function search_member()
     {
         $data = \Request::get('find');
-        if ($data !== "") {
-            $user = User::where(function ($query) use ($data) {
-                $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
-                    ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
-                    ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
+        $id = auth()->user()->id;
 
-            })->paginate(10);
-            $user->appends(['find' => $data]);
-        } else {
-            $user = User::paginate(10);
+        $user = User::findOrFail($id);
+
+        if ($user->hoa_access_type === 2) {
+            $datas = [];
+            foreach ($user->subdivisions as $subdivision) {
+                $datas[] = $subdivision->id;
+            }
+            return $this->search_user_subdivision_admin($data, $datas);
         }
-        return RegistrationResource::collection($user);
+
+        //full admin
+        return $this->search_user_full_admin($data);
     }
 
     public function change_status($id)
@@ -178,5 +197,52 @@ class RegistrationController extends Controller
         return response([
             'template'=> __($status)
         ], 500);
+    }
+
+    private function search_user_subdivision_admin($data, $datas){
+        if ($data !== "") {
+            $user = User::with('subdivisions')
+                ->orderBy('id', 'DESC')
+                ->whereHas('subdivisions', function ($query) use ($datas) {
+                    $query->whereIn('id', $datas);
+                })
+                ->where('hoa_member', 1)
+                ->where('hoa_access_type', 0)
+                ->where(function ($query) use ($data) {
+                    $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
+                        ->orWhere('email', 'LIKE', '%' . $data . '%')
+                        ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
+                        ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
+                })->paginate(10);
+            $user->appends(['find' => $data]);
+        } else {
+            $user = User::with('subdivisions')
+                ->whereHas('subdivisions', function ($query) use ($datas) {
+                    $query->whereIn('id', $datas);
+                })
+                ->orderBy('id', 'DESC')
+                ->where('hoa_admin', '1')
+                ->where('hoa_access_type', 0)
+                ->paginate(10);
+        }
+        return RegistrationResource::collection($user);
+    }
+
+    private function search_user_full_admin($data){
+        if ($data !== "") {
+            $user = User::orderBy('id', 'DESC')
+                ->where('hoa_member', 1)
+                ->where(function ($query) use ($data) {
+                    $query->where('hoa_member_lname', 'Like', '%' . $data . '%')
+                        ->orWhere('email', 'LIKE', '%' . $data . '%')
+                        ->orWhere('hoa_member_fname', 'Like', '%' . $data . '%')
+                        ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ");
+
+                })->paginate(10);
+            $user->appends(['find' => $data]);
+        } else {
+            $user = User::where('hoa_member',1)->orderBy('id', 'DESC')->paginate(10);
+        }
+        return RegistrationResource::collection($user);
     }
 }

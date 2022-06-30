@@ -38,9 +38,10 @@ class DirectorController extends Controller
 //        }
         return DirectorResource::collection(Director::with('user')
             ->whereNotNull('hoa_bod_position')
+
             ->where('subdivision_id',$id)
             ->whereHas('user',function ($q){
-                $q->where('hoa_member_status',1);
+                $q->where('hoa_member_status',1)->where('hoa_admin',1);
             })
             ->orderBy('id','DESC')
             ->paginate(20));
@@ -69,6 +70,7 @@ class DirectorController extends Controller
                 $data['image'] = $relativePath;
             }
             $user = User::findOrfail($data['user_id']);
+            $user->subdivisions()->attach($data['subdivision_id']);
             $user->update([
                 'hoa_admin'=>1,
                 'hoa_access_type'=>$data['hoa_access_type']
@@ -139,8 +141,9 @@ class DirectorController extends Controller
             ]);
 
             $user = User::findOrfail($data['user_id']);
+            $user->subdivisions()->detach($data['subdivision_id']);
             $user->update([
-                'hoa_admin'=>1,
+                'hoa_admin'=>0,
                 'hoa_access_type'=>$data['hoa_access_type']
             ]);
             return $request;
@@ -171,7 +174,8 @@ class DirectorController extends Controller
         $user = Director::with('user')
             ->where('subdivision_id',$id)
             ->whereHas('user',function ($q){
-                $q->where('hoa_member_status',1)->where('hoa_access_type','=',0)->orWhere('hoa_access_type','=',2);
+                $q->where('hoa_member_status',1)
+                    ->where('hoa_member','=',1);
             })
             ->paginate(50);
         return ShowDirectorUserResource::collection($user);

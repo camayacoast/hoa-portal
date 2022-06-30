@@ -41,7 +41,6 @@ class LotController extends Controller
             }
             $newLot = $lot->create($data);
             $user = User::findOrFail($newLot->user_id);
-            $user->subdivisions()->attach($newLot->subdivision_id);
             $request = Director::updateOrcreate([
                 'user_id'=>$newLot->user_id,
             ],[
@@ -83,8 +82,6 @@ class LotController extends Controller
             }
             $newLot = $lot->update($data);
             $user = User::findOrFail($lot->user_id);
-            $user->subdivisions()->detach($lot->subdivision_id);
-            $user->subdivisions()->attach($lot->subdivision_id);
             $request = Director::where('user_id',$lot->user_id)->update([
                 'user_id'=>$lot->user_id,
                 'subdivision_id'=>$lot->subdivision_id,

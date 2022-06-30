@@ -20,6 +20,7 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request)
     {
+        $month = Carbon::now()->format('F');
         $fromDate = Carbon::now()->subMonth()->startOfMonth()->toDateString();
         $tillDate = Carbon::now()->subMonth()->endOfMonth()->toDateString();
         $id = auth()->user()->id;
@@ -51,19 +52,21 @@ class DashboardController extends Controller
             return response()->json([
                 'user'=>$userMember,
                 'userPerMonth'=>$userPerMonth,
-                'card'=>$card
+                'card'=>$card,
+                'month'=>$month
             ]);
 
         }
 
         $userMember = User::where('hoa_member','=',1)->count();
         $card = Card::count();
-        $userPerMonth = User::where('created_at','>=', Carbon::now()->subMonth()->toDateTimeString())->count();
+        $userPerMonth = User::where('hoa_member','=',1)->where('created_at','>=', Carbon::now()->subMonth()->toDateTimeString())->count();
 
         return response()->json([
             'user'=>$userMember,
             'userPerMonth'=>$userPerMonth,
-            'card'=>$card
+            'card'=>$card,
+            'month'=>$month
         ]);
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\Member\AutogateTemplate;
 use App\Http\Resources\Admin\Member\ShowAutogateTemplateResource;
 use App\Http\Resources\Admin\Member\UserSubdivisionResource;
 use App\Models\Autogate;
+use App\Models\Lot;
 use App\Models\Template;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -23,6 +24,25 @@ class AutogateController extends Controller
      */
     public function index()
     {
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
+        $data = [];
+        if ($user->hoa_access_type === 2) {
+            foreach ($user->subdivisions as $subdivision) {
+                $data[] = $subdivision->id;
+            }
+            $datas = Lot::select('user_id')->whereIn('subdivision_id',$data)->get();
+
+            $autogateId = [];
+            foreach ($datas as $userAutogate){
+                $autogateId[] = $userAutogate->user_id;
+            }
+            $cards = Autogate::with('user')
+                ->orderBy('id','DESC')
+                ->where('user_id',$autogateId)
+                ->paginate(10);
+            return AutogateResource::collection($cards);
+        }
         return AutogateResource::collection(Autogate::with('template')->orderBy('id','DESC')->paginate(10));
     }
 
@@ -88,18 +108,22 @@ class AutogateController extends Controller
     public function search_autogate()
     {
         $data = \Request::get('find');
-        if ($data !== "") {
-            $autogate = Autogate::where(function ($query) use ($data) {
-                $query->where('hoa_autogate_member_name', 'Like', '%' . $data . '%')
-                    ->orWhere('user_id', 'Like', '%' . $data . '%')
-                    ->orWhere('hoa_autogate_subdivision_name','Like','%'.$data.'%');
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
+        $data = [];
+        if ($user->hoa_access_type === 2) {
+            foreach ($user->subdivisions as $subdivision) {
+                $data[] = $subdivision->id;
+            }
+            $datas = Lot::select('user_id')->whereIn('subdivision_id', $data)->get();
 
-            })->paginate(10);
-            $autogate->appends(['find' => $data]);
-        } else {
-            $autogate = Autogate::orderBy('id','DESC')->paginate(10);
+            $autogateId = [];
+            foreach ($datas as $userAutogate) {
+                $autogateId[] = $userAutogate->user_id;
+            }
+            return $this->search_autogate_subdivision_admin($data,$autogateId);
         }
-        return AutogateResource::collection($autogate);
+        return $this->search_autogate_full_admin($data);
     }
 
     public function user_subdivision()
@@ -115,5 +139,36 @@ class AutogateController extends Controller
     {
         $autogateTemplate = Template::paginate(50);
         return AutogateTemplate::collection($autogateTemplate);
+    }
+
+    private function search_autogate_subdivision_admin($data,$datas){
+        if ($data !== "") {
+            $autogate = Autogate::where(function ($query) use ($data,$datas) {
+                $query->where('hoa_autogate_member_name', 'Like', '%' . $data . '%')
+                    ->where('user_id',$datas)
+                    ->orWhere('user_id', 'Like', '%' . $data . '%')
+                    ->orWhere('hoa_autogate_subdivision_name','Like','%'.$data.'%');
+
+            })->paginate(10);
+            $autogate->appends(['find' => $data]);
+        } else {
+            $autogate = Autogate::orderBy('id','DESC')->paginate(10);
+        }
+        return AutogateResource::collection($autogate);
+    }
+
+    private function search_autogate_full_admin($data){
+        if ($data !== "") {
+            $autogate = Autogate::where(function ($query) use ($data) {
+                $query->where('hoa_autogate_member_name', 'Like', '%' . $data . '%')
+                    ->orWhere('user_id', 'Like', '%' . $data . '%')
+                    ->orWhere('hoa_autogate_subdivision_name','Like','%'.$data.'%');
+
+            })->paginate(10);
+            $autogate->appends(['find' => $data]);
+        } else {
+            $autogate = Autogate::orderBy('id','DESC')->paginate(10);
+        }
+        return AutogateResource::collection($autogate);
     }
 }

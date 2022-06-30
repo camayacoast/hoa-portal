@@ -4,7 +4,7 @@ namespace App\Http\Resources\Admin\Member;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DueFeeResource extends JsonResource
+class SubdivisionDuesLotResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +15,8 @@ class DueFeeResource extends JsonResource
     public function toArray($request)
     {
         return[
-            'id'=>$this->id,
-            'fullName'=>$this->user->full_name,
-            'subdivision_id'=>$this->subdivision_id,
-            'subdivisionName'=>$this->subdivision->hoa_subd_name,
-            'street'=>$this->hoa_subd_lot_street_name
+            'lot_area'=>$this->hoa_subd_lot_area,
+            'dues'=>SubdivisionDuesResource::collection($this->subdivision->due)
         ];
     }
 }

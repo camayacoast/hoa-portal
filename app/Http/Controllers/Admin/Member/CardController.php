@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Member\CardRequest;
 use App\Http\Resources\Admin\Member\CardResource;
 use App\Http\Resources\Admin\ShowEmailResource;
 use App\Models\Card;
+use App\Models\Lot;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,25 @@ class CardController extends Controller
      */
     public function index()
     {
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
+        $data = [];
+        if ($user->hoa_access_type === 2) {
+            foreach ($user->subdivisions as $subdivision) {
+                $data[] = $subdivision->id;
+            }
+            $datas = Lot::select('user_id')->whereIn('subdivision_id',$data)->get();
+
+            $cardId = [];
+            foreach ($datas as $userCard){
+                $cardId[] = $userCard->user_id;
+            }
+            $cards = Card::with('user')
+                    ->orderBy('id','DESC')
+                    ->where('user_id',$cardId)
+                    ->paginate(10);
+            return CardResource::collection($cards);
+        }
         return CardResource::collection(Card::with('user')->orderBy('id','DESC')->paginate(10));
     }
 
@@ -82,8 +102,36 @@ class CardController extends Controller
     public function search_rfid()
     {
         $data = \Request::get('find');
+        $id = auth()->user()->id;
+        $user = User::findOrFail($id);
+        $data = [];
+        if ($user->hoa_access_type === 2) {
+            foreach ($user->subdivisions as $subdivision) {
+                $data[] = $subdivision->id;
+            }
+            $datas = Lot::select('user_id')->whereIn('subdivision_id', $data)->get();
+
+            $cardId = [];
+            foreach ($datas as $userCard) {
+                $cardId[] = $userCard->user_id;
+            }
+            return $this->search_dues_subdivision_admin($data,$cardId);
+        }
+        return $this->search_dues_full_admin($data);
+    }
+
+    public function show_email()
+    {
+        $user = User::where('hoa_member_status','=',1)->paginate(50);
+        return ShowEmailResource::collection($user);
+    }
+
+    private function search_dues_subdivision_admin($data,$datas){
         if ($data !== "") {
-            $rfid = Card::with('user')->orderBy('id', 'DESC')->whereHas('user',function ($query) use ($data) {
+            $rfid = Card::with('user')
+                ->orderBy('id', 'DESC')
+                ->where('user_id',$datas)
+                ->whereHas('user',function ($query) use ($data) {
                 $query->where('hoa_member_fname', 'Like', '%' . $data. '%')
                     ->orWhere('hoa_rfid_semnox_num','Like','%'.$data.'%')
                     ->orWhere('hoa_rfid_num','Like','%'.$data.'%')
@@ -98,9 +146,20 @@ class CardController extends Controller
         return CardResource::collection($rfid);
     }
 
-    public function show_email()
-    {
-        $user = User::where('hoa_member_status','=',1)->paginate(50);
-        return ShowEmailResource::collection($user);
+    private function search_dues_full_admin($data){
+        if ($data !== "") {
+            $rfid = Card::with('user')->orderBy('id', 'DESC')->whereHas('user',function ($query) use ($data) {
+                $query->where('hoa_member_fname', 'Like', '%' . $data. '%')
+                    ->orWhere('hoa_rfid_semnox_num','Like','%'.$data.'%')
+                    ->orWhere('hoa_rfid_num','Like','%'.$data.'%')
+                    ->orWhere('hoa_member_lname','like','%'.$data.'%')
+                    ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ")
+                    ->orWhereRaw("concat(hoa_member_fname, ' ', hoa_member_lname) like '%$data%' ");
+            })->paginate(10);
+            $rfid->appends(['find' => $data]);
+        } else {
+            $rfid = Card::with('user')->orderBy('id', 'DESC')->paginate(10);
+        }
+        return CardResource::collection($rfid);
     }
 }
