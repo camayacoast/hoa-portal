@@ -22,7 +22,12 @@ use App\Http\Controllers\Admin\SubdivisionController;
 use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\Admin\Member\LotController;
-
+use App\Http\Controllers\Member\DirectorsController;
+use App\Http\Controllers\Member\NewsController;
+use App\Http\Controllers\Member\Profile\ChangePasswordController;
+use App\Http\Controllers\Member\Profile\DesigneeController;
+use App\Http\Controllers\Member\Profile\InformationController;
+use App\Http\Controllers\Member\Profile\NotificationController;
 
 
 /*
@@ -161,9 +166,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/fee/search/data',[FeeController::class,'search_fee']);
     });
 
-
+    Route::group(['prefix'=>'member'],function (){
+        Route::resource('information',InformationController::class)->only(['index','update']);
+        Route::resource('notification',NotificationController::class)->only('index','update');
+        Route::post('changePassword',[ChangePasswordController::class,'changePassword']);
+        Route::resource('designee',DesigneeController::class)->except(['update','show']);
+        Route::get('dashboard',\App\Http\Controllers\Member\DashboardController::class);
+        Route::get('news',NewsController::class);
+        Route::get('director',DirectorsController::class);
+        Route::get('events',\App\Http\Controllers\Member\AnnouncementController::class);
+    });
 
     Route::post('/logout', [AuthController::class, 'logout']);
+
 });
 
 

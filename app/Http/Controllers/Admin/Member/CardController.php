@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin\Member;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Member\CardRequest;
+use App\Http\Requests\Admin\Member\StoreCardRequest;
+use App\Http\Requests\Admin\Member\UpdateCardRequest;
 use App\Http\Resources\Admin\Member\CardResource;
 use App\Http\Resources\Admin\ShowEmailResource;
 use App\Models\Card;
@@ -48,7 +49,7 @@ class CardController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CardRequest $request,Card $card)
+    public function store(StoreCardRequest $request,Card $card)
     {
         $data = $request->validated();
         if($data){
@@ -77,7 +78,7 @@ class CardController extends Controller
      * @param  \App\Models\Card  $card
      * @return \Illuminate\Http\Response
      */
-    public function update(CardRequest $request, $id)
+    public function update(UpdateCardRequest $request, $id)
     {
         $card = Card::findOrFail($id);
         $data = $request->validated();
@@ -104,7 +105,7 @@ class CardController extends Controller
         $data = \Request::get('find');
         $id = auth()->user()->id;
         $user = User::findOrFail($id);
-        $data = [];
+
         if ($user->hoa_access_type === 2) {
             foreach ($user->subdivisions as $subdivision) {
                 $data[] = $subdivision->id;
@@ -131,10 +132,11 @@ class CardController extends Controller
             $rfid = Card::with('user')
                 ->orderBy('id', 'DESC')
                 ->where('user_id',$datas)
+                ->where('hoa_rfid_semnox_num','Like','%'.$data.'%')
+                ->orWhere('hoa_rfid_num','Like','%'.$data.'%')
                 ->whereHas('user',function ($query) use ($data) {
                 $query->where('hoa_member_fname', 'Like', '%' . $data. '%')
-                    ->orWhere('hoa_rfid_semnox_num','Like','%'.$data.'%')
-                    ->orWhere('hoa_rfid_num','Like','%'.$data.'%')
+
                     ->orWhere('hoa_member_lname','like','%'.$data.'%')
                     ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ")
                     ->orWhereRaw("concat(hoa_member_fname, ' ', hoa_member_lname) like '%$data%' ");
@@ -148,10 +150,13 @@ class CardController extends Controller
 
     private function search_dues_full_admin($data){
         if ($data !== "") {
-            $rfid = Card::with('user')->orderBy('id', 'DESC')->whereHas('user',function ($query) use ($data) {
+            $rfid = Card::with('user')->orderBy('id', 'DESC')
+                ->where(function ($query) use ($data) {
+                    $query->where('hoa_rfid_semnox_num','LIKE','%'.$data.'%')
+                        ->orWhere('hoa_rfid_num','LIKE','%'.$data.'%');
+                })
+                ->orWhereHas('user',function ($query) use ($data) {
                 $query->where('hoa_member_fname', 'Like', '%' . $data. '%')
-                    ->orWhere('hoa_rfid_semnox_num','Like','%'.$data.'%')
-                    ->orWhere('hoa_rfid_num','Like','%'.$data.'%')
                     ->orWhere('hoa_member_lname','like','%'.$data.'%')
                     ->orWhereRaw("concat(hoa_member_lname, ' ', hoa_member_fname) like '%$data%' ")
                     ->orWhereRaw("concat(hoa_member_fname, ' ', hoa_member_lname) like '%$data%' ");

@@ -33,6 +33,7 @@ class StoreLotRequest extends FormRequest
             'hoa_subd_lot_num'=>'required',
             'hoa_subd_lot_house_num'=>'',
             'hoa_subd_lot_street_name'=>'',
+            'hoa_subd_lot_default'=>'required'
         ];
     }
 

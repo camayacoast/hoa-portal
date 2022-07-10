@@ -25,7 +25,7 @@ class SubdivisionRequest extends FormRequest
     {
         return [
             'hoa_subd_name'=>'required|unique:subdivisions,hoa_subd_name',
-            'hoa_subd_area'=>'required',
+            'hoa_subd_area'=>'',
             'image' => 'nullable|string',
             'hoa_subd_blocks'=>'required',
             'hoa_subd_lots'=>'required',

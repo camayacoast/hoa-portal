@@ -110,7 +110,6 @@ class AutogateController extends Controller
         $data = \Request::get('find');
         $id = auth()->user()->id;
         $user = User::findOrFail($id);
-        $data = [];
         if ($user->hoa_access_type === 2) {
             foreach ($user->subdivisions as $subdivision) {
                 $data[] = $subdivision->id;
@@ -149,7 +148,7 @@ class AutogateController extends Controller
                     ->orWhere('user_id', 'Like', '%' . $data . '%')
                     ->orWhere('hoa_autogate_subdivision_name','Like','%'.$data.'%');
 
-            })->paginate(10);
+            })->orderBy('id','DESC')->paginate(10);
             $autogate->appends(['find' => $data]);
         } else {
             $autogate = Autogate::orderBy('id','DESC')->paginate(10);
@@ -164,7 +163,7 @@ class AutogateController extends Controller
                     ->orWhere('user_id', 'Like', '%' . $data . '%')
                     ->orWhere('hoa_autogate_subdivision_name','Like','%'.$data.'%');
 
-            })->paginate(10);
+            })->orderBy('id','DESC')->paginate(10);
             $autogate->appends(['find' => $data]);
         } else {
             $autogate = Autogate::orderBy('id','DESC')->paginate(10);

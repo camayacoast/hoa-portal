@@ -17,7 +17,11 @@ class TransactionController extends Controller
 
     public function index($id)
     {
-        return TransactionResource::collection(Transaction::with('card')->where('card_id',$id)->orderBy('id','DESC')->paginate(10));
+        return TransactionResource::collection(
+            Transaction::with('card')
+                ->where('card_id',$id)
+                ->orderBy('id','DESC')
+                ->paginate(10));
     }
 
 
@@ -32,20 +36,20 @@ class TransactionController extends Controller
             $rfid = Card::findOrFail($data['card_id']);
 
             //if there is no load
-            if($rfid->hoa_rfid_reg_privilege_load === 0){
-                return response()->json([
-                    'data'=>['errors'=>'Sorry you dont have enough load! Please'],
-
-                ],500);
-            }
+//            if($rfid->hoa_rfid_reg_privilege_load === 0){
+//                return response()->json([
+//                    'data'=>['errors'=>'Sorry you dont have enough load! Please'],
+//
+//                ],500);
+//            }
 
             //if the request was greater than load
-            if($rfid->hoa_rfid_reg_privilege_load <= $data['hoa_privilege_transaction_amount']){
-                return response()->json([
-                    'data'=>['errors'=>'Sorry you dont have enough load! Please'],
-
-                ],500);
-            }
+//            if($rfid->hoa_rfid_reg_privilege_load <= $data['hoa_privilege_transaction_amount']){
+//                return response()->json([
+//                    'data'=>['errors'=>'Sorry you dont have enough load! Please'],
+//
+//                ],500);
+//            }
 
             //privilege avail
             if($data['hoa_transaction'] === 1){

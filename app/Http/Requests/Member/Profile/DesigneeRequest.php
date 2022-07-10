@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Member;
+namespace App\Http\Requests\Member\Profile;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CardRequest extends FormRequest
+class DesigneeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,11 @@ class CardRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'=>'required',
-            'hoa_rfid_num'=>'required',
-            'hoa_rfid_semnox_num'=>'required',
-            'hoa_rfid_reg_privilege_load'=>'required',
-            'hoa_rfid_reg_status'=>'required',
-            'hoa_rfid_reg_modified'=>'',
-
+            'user_id'=>'',
+            'hoa_member_designee_name'=>'required',
+            'hoa_member_designee_relation'=>'required',
+            'hoa_member_bday'=>'required',
+            'hoa_member_designee_modifiedby'=>''
         ];
     }
 }

@@ -11,6 +11,9 @@ class Due extends Model
     use HasFactory,SoftDeletes;
 
     protected $guarded = [];
+    protected $casts = [
+        'hoa_subd_dues_cost' => 'integer',
+    ];
     public function schedule(){
         return $this->belongsTo(Schedule::class);
     }

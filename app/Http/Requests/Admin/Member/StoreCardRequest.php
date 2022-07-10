@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Member;
+namespace App\Http\Requests\Admin\Member;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LotRequest extends FormRequest
+class StoreCardRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,12 @@ class LotRequest extends FormRequest
     public function rules()
     {
         return [
-            'subdivision_id'=>'required',
             'user_id'=>'required',
-            'agent_id'=>'required',
-            'hoa_subd_lot_block'=>'required',
-
-            'hoa_subd_lot_num'=>'required'
+            'hoa_rfid_num'=>'required|unique:cards,hoa_rfid_num',
+            'hoa_rfid_semnox_num'=>'required|unique:cards,hoa_rfid_semnox_num',
+            'hoa_rfid_reg_privilege_load'=>'required',
+            'hoa_rfid_reg_status'=>'required',
+            'hoa_rfid_reg_modified'=>'',
         ];
     }
 }

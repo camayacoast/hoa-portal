@@ -34,15 +34,25 @@ class LotController extends Controller
      */
     public function store(StoreLotRequest $request,Lot $lot)
     {
-        DB::transaction(function () use ($request,$lot){
-            $data = $request->validated();
+        $data = $request->validated();
+        $subdivision = Subdivision::where('id','=',$data['subdivision_id'])->first();
+        if((int)$data['hoa_subd_lot_block'] > (int)$subdivision->hoa_subd_blocks){
+            return response('You are Exceeding the inputs',500);
+        }
+
+        if(count($subdivision->lot) > (int)$subdivision->hoa_subd_lots){
+            return response('You are Exceeding the inputs',500);
+        }
+
+        DB::transaction(function () use ($request,$lot,$data){
+
             if($data){
                 $data['hoa_subd_lot_createdby'] = auth()->user()->id;
             }
             $newLot = $lot->create($data);
-            $user = User::findOrFail($newLot->user_id);
-            $request = Director::updateOrcreate([
-                'user_id'=>$newLot->user_id,
+            $request = Director::where('user_id',$newLot->user_id)->updateOrcreate([
+                'subdivision_id'=>$newLot->subdivision_id,
+                'user_id'=>$newLot->user_id
             ],[
                 'subdivision_id'=>$newLot->subdivision_id,
                 'user_id'=>$newLot->user_id,

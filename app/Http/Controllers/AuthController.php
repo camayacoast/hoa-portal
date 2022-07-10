@@ -24,6 +24,7 @@ class AuthController extends Controller
             ], 422);
         }
         $user = Auth::user();
+
         $token = $user->createToken('main')->plainTextToken;
 //        list($userTokenId, $userTokenValue) = explode('|', $token);
 //        $logoutExistingTokens = $user->tokens->filter(function ($value, $key) use ($userTokenId) {

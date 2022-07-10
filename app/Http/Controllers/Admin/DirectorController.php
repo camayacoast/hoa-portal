@@ -41,7 +41,7 @@ class DirectorController extends Controller
 
             ->where('subdivision_id',$id)
             ->whereHas('user',function ($q){
-                $q->where('hoa_member_status',1)->where('hoa_admin',1);
+                $q->where('hoa_member_status',1);
             })
             ->orderBy('id','DESC')
             ->paginate(20));

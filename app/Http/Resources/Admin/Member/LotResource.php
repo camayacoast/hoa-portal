@@ -24,6 +24,7 @@ class LotResource extends JsonResource
             'hoa_subd_lot_area'=>$this->hoa_subd_lot_area,
             'hoa_subd_lot_house_num'=>$this->hoa_subd_lot_house_num,
             'hoa_subd_lot_street_name'=>$this->hoa_subd_lot_street_name,
+            'hoa_subd_lot_default'=>$this->hoa_subd_lot_default,
             'hoa_sales_agent_name'=>$this->agent->hoa_sales_agent_fname.' '.$this->agent->hoa_sales_agent_mname.' '.$this->agent->hoa_sales_agent_lname,
             'hoa_sales_agent_contact_number'=>$this->agent->hoa_sales_agent_contact_number
         ];
