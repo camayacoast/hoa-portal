@@ -11,7 +11,7 @@ class Schedule extends Model
     use HasFactory,SoftDeletes;
 
     public function due(){
-        return $this->hasMany(Due::class);
+        return $this->hasOne(Due::class);
     }
 
     public function email(){

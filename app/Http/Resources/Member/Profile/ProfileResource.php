@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Admin\Member;
+namespace App\Http\Resources\Member\Profile;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SubdivisionDuesLotResource extends JsonResource
+class ProfileResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,10 +14,8 @@ class SubdivisionDuesLotResource extends JsonResource
      */
     public function toArray($request)
     {
-        return[
-            'lot_area'=>$this->hoa_subd_lot_area,
-            'designee'=>$this->user->designee()->count(),
-            'dues'=>SubdivisionDuesResource::collection($this->subdivision->due)
+        return [
+            'subdivision_name'=>$this->subdivision->hoa_subd_name,
         ];
     }
 }

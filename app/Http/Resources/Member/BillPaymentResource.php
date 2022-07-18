@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Admin\Member;
+namespace App\Http\Resources\Member;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SubdivisionDuesLotResource extends JsonResource
+class BillPaymentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +15,8 @@ class SubdivisionDuesLotResource extends JsonResource
     public function toArray($request)
     {
         return[
-            'lot_area'=>$this->hoa_subd_lot_area,
-            'designee'=>$this->user->designee()->count(),
-            'dues'=>SubdivisionDuesResource::collection($this->subdivision->due)
+            'total_cost'=>number_format($this->hoa_billing_past_due + $this->hoa_billing_total_cost,2),
+            'payment_due'=>$this->hoa_billing_generated_date,
         ];
     }
 }

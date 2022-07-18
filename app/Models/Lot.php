@@ -13,7 +13,7 @@ class Lot extends Model
     protected $guarded = [];
 
     public function fee(){
-        return $this->hasOne(Fee::class);
+        return $this->hasMany(Fee::class);
     }
     public function subdivision(){
         return $this->belongsTo(Subdivision::class);
@@ -25,5 +25,9 @@ class Lot extends Model
 
     public function agent(){
         return $this->belongsTo(Agent::class);
+    }
+
+    public function billing(){
+        return $this->hasMany(Billing::class);
     }
 }

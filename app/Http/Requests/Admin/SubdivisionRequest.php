@@ -30,7 +30,9 @@ class SubdivisionRequest extends FormRequest
             'hoa_subd_blocks'=>'required',
             'hoa_subd_lots'=>'required',
             'hoa_subd_contact_person'=>'required',
-            'hoa_subd_contact_number'=>'required'
+            'hoa_subd_contact_number'=>'required',
+            'hoa_subd_dues_payment_target' => 'required|numeric|min:1|max:30',
+            'hoa_subd_dues_cutoff_date' => 'required|date|after:yesterday',
         ];
     }
 }

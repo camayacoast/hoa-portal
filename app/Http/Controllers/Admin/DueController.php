@@ -8,6 +8,7 @@ use App\Http\Resources\Admin\DueResource;
 use App\Http\Resources\Admin\ScheduleResource;
 use App\Models\Due;
 use App\Models\Schedule;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Validation\Validator;
 
@@ -98,6 +99,9 @@ class DueController extends Controller
         return ScheduleResource::collection($schedule);
     }
 
+    public function units(){
+        return Unit::select('id','name')->get();
+    }
     public function change_status($id)
     {
         $due = Due::find($id);

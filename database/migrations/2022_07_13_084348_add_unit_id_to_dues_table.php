@@ -13,10 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('payments', function (Blueprint $table) {
-            $table->id();
-
-            $table->timestamps();
+        Schema::table('dues', function (Blueprint $table) {
+            $table->foreignId('unit_id')->constrained();
         });
     }
 
@@ -27,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payments');
+        Schema::table('dues', function (Blueprint $table) {
+            $table->dropColumn('unit_id');
+        });
     }
 };

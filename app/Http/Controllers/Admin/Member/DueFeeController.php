@@ -45,7 +45,7 @@ class DueFeeController extends Controller
     }
 
     public function subdivision_fees($id){
-        $due = Lot::with('subdivision')
+        $due = Lot::with('subdivision','user')
             ->where('id',$id)->first();
        return new SubdivisionDuesLotResource($due);
     }

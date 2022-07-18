@@ -3,9 +3,8 @@
 namespace App\Http\Resources\Member;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\URL;
 
-class NewsResource extends JsonResource
+class PaymentHistoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,11 +16,10 @@ class NewsResource extends JsonResource
     {
         return[
             'id'=>$this->id,
-            'description'=>$this->hoa_event_notices_desc,
-            'fulllStory'=>$this->hoa_event_notices_fullstory,
-            'title'=>$this->hoa_event_notices_title,
-            'type'=>$this->hoa_event_notices_type,
-            'image'=>$this->hoa_event_notices_photo ? URL::to($this->hoa_event_notices_photo) : null,
+            'bill_month'=>$this->hoa_billing_generated_date,
+            'date_paid'=>$this->hoa_billing_date_paid,
+            'balance'=>number_format($this->hoa_billing_past_due + $this->hoa_billing_total_cost,2),
+            'status'=>$this->hoa_billing_status
         ];
     }
 }

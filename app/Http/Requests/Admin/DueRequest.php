@@ -28,11 +28,9 @@ class DueRequest extends FormRequest
             'subdivision_id' => 'required',
             'hoa_subd_dues_name' => 'required',
             'hoa_subd_dues_cost' => 'required',
-            'hoa_subd_dues_unit' => 'required',
+            'unit_id' => 'required',
             'hoa_subd_dues_start_date' => 'required|date|after:yesterday',
             'hoa_subd_dues_end_date' => 'required|date|after_or_equal:hoa_subd_dues_start_date',
-            'hoa_subd_dues_payment_target' => 'required|numeric|min:1|max:30',
-            'hoa_subd_dues_cutoff_date' => 'required|numeric|min:1|max:30',
             'schedule_id' => 'required',
             'hoa_subd_dues_modifiedby'=>''
         ];
@@ -42,7 +40,8 @@ class DueRequest extends FormRequest
     public function message()
     {
         return [
-            'schedule_id.required'=>'the hoa subd dues_fees recurrent field was required'
+            'schedule_id.required'=>'the hoa subd dues recurrent field was required',
+            'unit_id.required'=>'the hoa subd dues unit field was required'
         ];
     }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\Member\DocumentController;
 use App\Http\Controllers\Admin\Member\DueFeeController;
 use App\Http\Controllers\Admin\Member\EmailController;
 use App\Http\Controllers\Admin\Member\FeeController;
+use App\Http\Controllers\Admin\Member\PaymentTransactionController;
 use App\Http\Controllers\Admin\Member\TemplateController;
 use App\Http\Controllers\Admin\Member\TransactionController;
 use App\Http\Controllers\Admin\NavigationController;
@@ -22,12 +23,18 @@ use App\Http\Controllers\Admin\SubdivisionController;
 use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\Admin\Member\LotController;
+use App\Http\Controllers\Member\AnnouncementActionsController;
+use App\Http\Controllers\Member\BillingController;
+use App\Http\Controllers\Member\BillPaymentController;
 use App\Http\Controllers\Member\DirectorsController;
 use App\Http\Controllers\Member\NewsController;
+use App\Http\Controllers\Member\PaymentAddressController;
+use App\Http\Controllers\Member\PaymentController;
 use App\Http\Controllers\Member\Profile\ChangePasswordController;
 use App\Http\Controllers\Member\Profile\DesigneeController;
 use App\Http\Controllers\Member\Profile\InformationController;
 use App\Http\Controllers\Member\Profile\NotificationController;
+use App\Http\Controllers\Member\Profile\ProfileController;
 
 
 /*
@@ -50,9 +57,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //hoa admin routes
     Route::group(['prefix' => 'admin', 'middleware' => 'hoa_admin'], function () {
-
-        //show user login on navagation
-        Route::get('/navigation',NavigationController::class);
 
         //dashboard controller
         Route::get('/dashboard',DashboardController::class);
@@ -103,6 +107,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('/due',DueController::class)->except('index');
         Route::get('/due/show/schedule',[DueController::class,'show_schedule']);
         Route::put('/due/change/status/{id}', [DueController::class, 'change_status']);
+        Route::get('/due/show/unit',[DueController::class,'units']);
 
         //lot routes
         Route::get('/lot/{id}/member',[LotController::class,'index']);
@@ -164,6 +169,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('/fee',FeeController::class)->except('index');
         Route::get('/fee/{data}/lot',[FeeController::class,'index']);
         Route::get('/fee/search/data',[FeeController::class,'search_fee']);
+
+        //paymentTransaction
+        Route::get('/payment/transaction/{id}',[PaymentTransactionController::class,'index']);
+        Route::apiResource('/payment/transaction',PaymentTransactionController::class)->only('update','show');
     });
 
     Route::group(['prefix'=>'member'],function (){
@@ -171,12 +180,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::resource('notification',NotificationController::class)->only('index','update');
         Route::post('changePassword',[ChangePasswordController::class,'changePassword']);
         Route::resource('designee',DesigneeController::class)->except(['update','show']);
+        Route::get('/profile',ProfileController::class);
+
+       //dashboard
         Route::get('dashboard',\App\Http\Controllers\Member\DashboardController::class);
         Route::get('news',NewsController::class);
         Route::get('director',DirectorsController::class);
         Route::get('events',\App\Http\Controllers\Member\AnnouncementController::class);
+        Route::get('/show/events/{id}',[AnnouncementActionsController::class,'showEvent']);
+        Route::get('/show/news/{id}',[AnnouncementActionsController::class,'showNews']);
+        Route::get('/billing/{id}',BillingController::class);
+        Route::get('/bill/payment/{id}',BillPaymentController::class);
+        Route::get('payment',PaymentController::class);
+        Route::post('/bill/payment/cash/{id}',PaymentAddressController::class);
     });
-
+    Route::get('/navigation',NavigationController::class);
     Route::post('/logout', [AuthController::class, 'logout']);
 
 });

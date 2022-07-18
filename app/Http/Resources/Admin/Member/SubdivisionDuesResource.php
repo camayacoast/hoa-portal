@@ -20,7 +20,8 @@ class SubdivisionDuesResource extends JsonResource
             'item'=>$this->hoa_subd_dues_name,
             'cost'=> $this->hoa_subd_dues_cost,
 //            'lot'=>$this->subdivision->lot[0]->hoa_subd_lot_area,
-            'scheudle'=>$this->schedule->hoa_schedule_name
+            'scheudle'=>$this->schedule->hoa_schedule_name,
+            'unit_id'=>$this->unit_id
         ];
     }
 }

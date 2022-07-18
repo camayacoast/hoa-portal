@@ -5,7 +5,7 @@ namespace App\Http\Resources\Member;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\URL;
 
-class NewsResource extends JsonResource
+class AnnouncementActionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +16,11 @@ class NewsResource extends JsonResource
     public function toArray($request)
     {
         return[
-            'id'=>$this->id,
-            'description'=>$this->hoa_event_notices_desc,
-            'fulllStory'=>$this->hoa_event_notices_fullstory,
-            'title'=>$this->hoa_event_notices_title,
             'type'=>$this->hoa_event_notices_type,
-            'image'=>$this->hoa_event_notices_photo ? URL::to($this->hoa_event_notices_photo) : null,
+            'title'=>$this->hoa_event_notices_title,
+            'desc'=>$this->hoa_event_notices_desc,
+            'photo'=>$this->hoa_event_notices_photo ? URL::to($this->hoa_event_notices_photo) : null,
+            'story'=>$this->hoa_event_notices_fullstory
         ];
     }
 }

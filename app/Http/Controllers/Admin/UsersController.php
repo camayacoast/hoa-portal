@@ -174,14 +174,14 @@ class UsersController extends Controller
                     $query->whereIn('id', $datas);
                 })
                 ->orderBy('id', 'DESC')
-                ->where('hoa_member', 1)
+                ->where('hoa_member', '=',1)
                 ->where('hoa_admin','=',0)
-                ->where('hoa_member_status', 1)
+                ->where('hoa_member_status', '=',1)
                 ->where('hoa_access_type', "!=", 1)
                 ->paginate(10));
             return $data;
         }
-        $user = User::where('hoa_member_status', 1)
+        $user = User::with('subdivisions')->where('hoa_member_status', 1)
             ->orderBy('id', 'DESC')
             ->where('hoa_member', 1)
             ->where('hoa_admin','=',0)

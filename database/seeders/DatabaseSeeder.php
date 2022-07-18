@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
 //        \App\Models\Agent::factory(1000)->create();
         $this->call(UsersTableSeeder::class);
         $this->call(SchedulesTableSeeder::class);
+        $this->call(UnitTableSeeder::class);
     }
 }

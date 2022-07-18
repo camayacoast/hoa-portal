@@ -22,6 +22,8 @@ class SubdivisionResource extends JsonResource
             'hoa_subd_lots'=>$this->hoa_subd_lots,
             'hoa_subd_contact_person'=>$this->hoa_subd_contact_person,
             'hoa_subd_contact_number'=>$this->hoa_subd_contact_number,
+            'hoa_subd_dues_payment_target'=>$this->hoa_subd_dues_payment_target,
+            'hoa_subd_dues_cutoff_date'=>$this->hoa_subd_dues_cutoff_date,
              'hoa_subd_status'=>$this->hoa_subd_status
         ];
     }
