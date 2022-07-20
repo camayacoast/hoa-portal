@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin\Member;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Member\FeeRequest;
 use App\Http\Resources\Admin\Member\FeeResource;
+use App\Models\Billing;
 use App\Models\Fee;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class FeeController extends Controller
 {
@@ -19,23 +21,31 @@ class FeeController extends Controller
      */
     public function index($id)
     {
-        return FeeResource::collection(Fee::orderBy('id','DESC')->where('lot_id','=',$id)->paginate(10));
+        return FeeResource::collection(Fee::orderBy('id', 'DESC')->where('lot_id', '=', $id)->paginate(10));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return Response
      */
-    public function store(FeeRequest $request,Fee $fee)
+    public function store(FeeRequest $request, Fee $fee)
     {
-        $data = $request->validated();
-        if($data){
-            $data['hoa_fees_modifiedby'] = auth()->user()->id;
-        }
-        $request = $fee->create($data);
-        return $request;
+        DB::transaction(function () use ($request, $fee) {
+            $data = $request->validated();
+            if ($data) {
+                $data['hoa_fees_modifiedby'] = auth()->user()->id;
+            }
+            $billing = Billing::where('id', '=', $data['lot_id'])->latest()->first();
+            $latestCost = $billing->hoa_billing_total_cost + $data['hoa_fees_cost'];
+            $billing->update([
+                'hoa_billing_total_cost' => $latestCost
+            ]);
+           $request = $fee->create($data);
+
+            return $request;
+        });
     }
 
     /**
@@ -53,19 +63,26 @@ class FeeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return Response
      */
     public function update(FeeRequest $request, $id)
     {
-        $fee = Fee::findOrFail($id);
-        $data = $request->validated();
-        if($data){
-            $data['hoa_fees_modifiedby'] = auth()->user()->id;
-        }
-        $request = $fee->update($data);
-        return $request;
+        DB::transaction(function () use ($request, $id) {
+            $fee = Fee::findOrFail($id);
+            $data = $request->validated();
+            if ($data) {
+                $data['hoa_fees_modifiedby'] = auth()->user()->id;
+            }
+            $billing = Billing::where('id', '=', $data['lot_id'])->latest()->first();
+            $latestCost = $billing->hoa_billing_total_cost + $data['hoa_fees_cost'];
+            $billing->update([
+                'hoa_billing_total_cost' => $latestCost
+            ]);
+            $request = $fee->update($data);
+            return $request;
+        });
     }
 
     /**
@@ -77,21 +94,26 @@ class FeeController extends Controller
     public function destroy($id)
     {
         $fee = Fee::findOrFail($id);
+        $billing = Billing::where('id', '=', $fee->lot_id)->latest()->first();
+        $latestCost = $billing->hoa_billing_total_cost - $fee->hoa_fees_cost;
+        $billing->update([
+            'hoa_billing_total_cost' => $latestCost
+        ]);
         $fee->delete();
-        return response('',204);
+        return response('', 204);
     }
 
     public function search_fee()
     {
         $data = \Request::get('find');
         if ($data !== "") {
-            $fee = Fee::orderBy('id','DESC')->where(function ($query) use ($data) {
+            $fee = Fee::orderBy('id', 'DESC')->where(function ($query) use ($data) {
                 $query->where('hoa_fees_item', 'Like', '%' . $data . '%');
 
             })->paginate(10);
             $fee->appends(['find' => $data]);
         } else {
-            $fee = Fee::orderBy('id','DESC')->paginate(10);
+            $fee = Fee::orderBy('id', 'DESC')->paginate(10);
         }
         return FeeResource::collection($fee);
     }

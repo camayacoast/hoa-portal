@@ -17,7 +17,7 @@ class PaymentTransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($lotId)
+    public function index($userId)
     {
         $id = auth()->user()->id;
         $user = User::findOrFail($id);
@@ -26,12 +26,21 @@ class PaymentTransactionController extends Controller
             foreach ($user->subdivisions as $subdivision) {
                 $data[] = $subdivision->id;
             }
-            $lotIds = Lot::select('lot_id')->whereIn('subdivision_id',$data)->get();
-
+            $lots = Lot::select('id')->whereIn('subdivision_id',$data)->get();
+            $lotIds = [];
+            foreach ($lots as $lot){
+                $lotIds[] = $lot->id;
+            }
             $billing = Billing::whereIn('lot_id',$lotIds)->paginate(10);
             return PaymentTransactionResource::collection($billing);
         }
-        $billing = Billing::where('lot_id','=',$lotId)->paginate(10);
+
+        $lot = Lot::select('id')->where('user_id',$userId)->get();
+        $lotId = [];
+        foreach ($lot as $data){
+            $lotId[]=$data->id;
+        }
+        $billing = Billing::orderBy('id','DESC')->whereIn('lot_id',$lotId)->paginate(10);
         return PaymentTransactionResource::collection($billing);
     }
 
@@ -41,7 +50,7 @@ class PaymentTransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PaymentTransactionRequest $request)
     {
         //
     }
@@ -82,5 +91,19 @@ class PaymentTransactionController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function search_payment_transaction($id){
+        $data = \Request::get('find');
+        if ($data !== "") {
+            $dueFee = Billing::orderBy('id','DESC')
+                ->where('lot_id',$id)
+                ->orWhere('hoa_billing_statement_number','LIKE','%'.$data.'%')
+                ->paginate(10);
+            $dueFee->appends(['find' => $data]);
+        } else {
+            $dueFee = Billing::orderBy('id','DESC')->paginate(10);
+        }
+        return PaymentTransactionResource::collection($dueFee);
     }
 }

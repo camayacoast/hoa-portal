@@ -16,7 +16,8 @@ class DuesResource extends JsonResource
     {
         return[
             'due_name'=>$this->hoa_subd_dues_name,
-            'due_cost'=>$this->hoa_subd_dues_cost
+            'due_cost'=>$this->hoa_subd_dues_cost,
+            'unit_id'=>$this->unit_id,
         ];
     }
 }

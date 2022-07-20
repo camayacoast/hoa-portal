@@ -19,6 +19,7 @@ class PaymentTransactionResource extends JsonResource
             'statement_number'=>$this->hoa_billing_statement_number,
             'total_cost'=>$this->hoa_billing_total_cost,
             'past_due'=>$this->hoa_billing_past_due,
+            'amount_paid'=>$this->hoa_billing_amount_paid,
             'hoa_billing_status'=>$this->hoa_billing_status,
             'bill_month'=>$this->hoa_billing_generated_date,
             'hoa_billing_date_paid'=>$this->hoa_billing_date_paid

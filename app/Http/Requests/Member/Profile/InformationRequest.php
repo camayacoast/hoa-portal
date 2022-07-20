@@ -27,7 +27,7 @@ class InformationRequest extends FormRequest
             'lotId'=>'required',
             'hoa_member_lname'=>'required',
             'hoa_member_fname'=>'required',
-            'hoa_member_mname'=>'required',
+            'hoa_member_mname'=>'',
             'email'=>'required',
             'hoa_member_phone_num'=>'required',
             'hoa_subd_name'=>'required',

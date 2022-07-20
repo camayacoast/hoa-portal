@@ -20,6 +20,7 @@ class BillingResource extends JsonResource
             'subdivision_name'=>$this->subdivision->hoa_subd_name,
             'block_number'=>$this->hoa_subd_lot_block,
             'lot_area'=>$this->hoa_subd_lot_area,
+            'designee' => $this->user->designee()->count(),
             'lot_number'=>$this->hoa_subd_lot_num,
             'dues'=>DuesResource::collection($this->subdivision->due),
             'fees'=>FeesResource::collection($this->fee)

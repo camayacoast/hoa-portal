@@ -18,9 +18,6 @@ class DesigneeController extends Controller
 
     public function store(DesigneeRequest $request){
         $data = $request->validated();
-        if(count(auth()->user()->designee) === 4){
-            return response('You can only add at least 4 designee!',500);
-        }
         $userId = auth()->user()->id;
         if($data){
             $data['user_id'] = $userId;

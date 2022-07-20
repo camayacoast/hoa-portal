@@ -171,8 +171,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/fee/search/data',[FeeController::class,'search_fee']);
 
         //paymentTransaction
-        Route::get('/payment/transaction/{id}',[PaymentTransactionController::class,'index']);
+        Route::get('/payment/transaction/{id}/history',[PaymentTransactionController::class,'index']);
         Route::apiResource('/payment/transaction',PaymentTransactionController::class)->only('update','show');
+        Route::get('/payment/transaction/search/data/{id}',[PaymentTransactionController::class,'search_payment_transaction']);
     });
 
     Route::group(['prefix'=>'member'],function (){

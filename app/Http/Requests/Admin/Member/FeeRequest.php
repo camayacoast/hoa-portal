@@ -28,6 +28,8 @@ class FeeRequest extends FormRequest
             'schedule_id'=>'required',
             'hoa_fees_item'=>'required',
             'hoa_fees_desc'=>'',
+            'hoa_fees_start_date'=>'required',
+            'hoa_fees_end_date'=>'required',
             'hoa_fees_cost'=>'required',
             'hoa_fees_modifiedby'=>''
         ];

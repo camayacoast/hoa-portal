@@ -21,6 +21,8 @@ class FeeResource extends JsonResource
             'schedule'=>$this->schedule->hoa_schedule_name,
             'hoa_fees_item'=>$this->hoa_fees_item,
             'hoa_fees_desc'=>$this->hoa_fees_desc,
+            'hoa_fees_start_date'=>$this->hoa_fees_start_date,
+            'hoa_fees_end_date'=>$this->hoa_fees_end_date,
             'hoa_fees_cost'=>$this->hoa_fees_cost
         ];
     }

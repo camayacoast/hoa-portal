@@ -18,10 +18,11 @@ return new class extends Migration
             $table->foreignId('lot_id')->constrained();
             $table->string('hoa_billing_statement_number');
             $table->decimal('hoa_billing_total_cost');
+            $table->decimal('hoa_billing_amount_paid')->default(0.00);
+            $table->decimal('hoa_billing_past_due')->default(0.00);
             $table->date('hoa_billing_due_dates');
             $table->date('hoa_billing_generated_date');
             $table->date('hoa_billing_date_paid')->nullable();
-            $table->decimal('hoa_billing_past_due')->default(0.00);
             $table->string('hoa_billing_status');
             $table->string('hoa_billing_period');
             $table->softDeletes();

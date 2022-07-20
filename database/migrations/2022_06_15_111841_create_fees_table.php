@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('lot_id')->constrained();
             $table->foreignId('schedule_id')->constrained();
             $table->string('hoa_fees_item');
+            $table->date('hoa_fees_start_date');
+            $table->date('hoa_fees_end_date');
             $table->text('hoa_fees_desc')->nullable();
             $table->decimal('hoa_fees_cost');
             $table->integer('hoa_fees_modifiedby');

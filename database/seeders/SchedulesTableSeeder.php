@@ -15,20 +15,12 @@ class SchedulesTableSeeder extends Seeder
      */
     public function run()
     {
-        $schedule1=Schedule::create([
-            'hoa_schedule_name'=>'Daily',
-            'hoa_schedule_modifiedby'=>1
-        ]);
         $schedule2=Schedule::create([
             'hoa_schedule_name'=>'Monthly',
             'hoa_schedule_modifiedby'=>1
         ]);
         $schedule3=Schedule::create([
             'hoa_schedule_name'=>'Annually',
-            'hoa_schedule_modifiedby'=>1
-        ]);
-        $schedule4=Schedule::create([
-            'hoa_schedule_name'=>'Quarterly',
             'hoa_schedule_modifiedby'=>1
         ]);
         $schedule5=Schedule::create([

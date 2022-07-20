@@ -183,14 +183,16 @@ class LotController extends Controller
                 $bills->push($due->hoa_subd_dues_cost * $lotArea);
             } else if ($due->unit_id === 2) {
                 $bills->push($due->hoa_subd_dues_cost);
-            } else {
+            } else if($due->unit_id === 3){
                 $bills->push($due->hoa_subd_dues_cost * $designee + $due->cost);
+            }else{
+                $bills->push(0);
             }
         }
 
-        foreach ($lot->fee as $fee) {
-            $bills->push($fee->hoa_fees_cost);
-        }
+//        foreach ($lot->fee as $fee) {
+//            $bills->push($fee->hoa_fees_cost);
+//        }
         $billingData = [
             'lot_id' => $id,
             'hoa_billing_statement_number' => $statementNumber,

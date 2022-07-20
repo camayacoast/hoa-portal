@@ -43,6 +43,7 @@ class PaymentAddressController extends Controller
         }
         $request = Billing::where('id','=',$id)->update([
             'hoa_billing_date_paid'=>$data['date_paid'],
+            'hoa_billing_amount_paid'=>$data['amount_paid'],
             'hoa_billing_status'=>'For Verification'
         ]);
 
