@@ -26,9 +26,9 @@ class UpdateUserRequest extends FormRequest
         return [
             'hoa_member_lname'=>'required',
             'hoa_member_fname'=>'required',
-            'hoa_member_mname'=>'required',
-            'hoa_admin'=>'required',
-            'hoa_member'=>'required',
+            'hoa_member_mname'=>'',
+            'hoa_admin'=>'',
+            'hoa_member'=>'',
             'email'=>'required|email|unique:users,email,'.$this->id,
             'hoa_member_suffix'=>'',
             'hoa_member_ebill'=>'required',

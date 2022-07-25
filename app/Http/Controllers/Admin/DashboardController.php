@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Billing;
 use App\Models\Card;
 use App\Models\Lot;
 use App\Models\Subdivision;
@@ -39,20 +40,23 @@ class DashboardController extends Controller
                 ->whereIn('subdivision_id',$data)
                 ->count();
 
-            $users = Lot::select('user_id')->whereIn('subdivision_id',$data)->get();
+            $users = Lot::select('user_id','id')->whereIn('subdivision_id',$data)->get();
 
             $cardId = [];
+            $billingId=[];
             foreach ($users as $userCard){
                 $cardId[] = $userCard->user_id;
+                $billingId[] = $userCard->id;
             }
             $card = Card::whereIn('user_id',$cardId)->count();
-
+            $billing = Billing::whereIn('lot_id',$billingId)->where('hoa_billing_status','For Verification')->count();
 
 
             return response()->json([
                 'user'=>$userMember,
                 'userPerMonth'=>$userPerMonth,
                 'card'=>$card,
+                'billing'=>$billing,
                 'month'=>$month
             ]);
 
@@ -61,11 +65,12 @@ class DashboardController extends Controller
         $userMember = User::where('hoa_member','=',1)->count();
         $card = Card::count();
         $userPerMonth = User::where('hoa_member','=',1)->where('created_at','>=', Carbon::now()->subMonth()->toDateTimeString())->count();
-
+        $billing = Billing::where('hoa_billing_status','For Verification')->count();
         return response()->json([
             'user'=>$userMember,
             'userPerMonth'=>$userPerMonth,
             'card'=>$card,
+            'billing'=>$billing,
             'month'=>$month
         ]);
     }

@@ -33,7 +33,7 @@ class SendingEmail extends Command
     public function handle()
     {
         try{
-            $email = Email::with(['user','schedule'])->where('hoa_email_sched','=',Carbon::now()->toDateString())->first();
+            $email = Email::with(['user','schedule'])->where('hoa_email_sched','=',Carbon::now())->first();
 
             if($email){
                 return $email->notify(new SendingEmailNotification());

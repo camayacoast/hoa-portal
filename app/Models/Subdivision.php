@@ -31,7 +31,7 @@ class Subdivision extends Model
     }
 
     public function due(){
-        return $this->hasMany(Due::class);
+        return $this->hasMany(Due::class)->where('hoa_subd_dues_status',1);
     }
 
 

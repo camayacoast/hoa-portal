@@ -54,7 +54,6 @@ class LotController extends Controller
             }
             $create = Lot::create($data);
             $id = $create->id;
-            $this->billing($id);
             $user = User::findOrFail($create->user_id);
             $user->subdivisions()->attach($data['subdivision_id']);
             $request = Director::where('user_id', $create->user_id)->updateOrcreate([
@@ -152,57 +151,4 @@ class LotController extends Controller
         return ShowSubdivisionResource::collection($subdivision);
     }
 
-    public function billing($id)
-    {
-
-        $lot = Lot::with('subdivision', 'user')
-            ->where('id', '=', $id)->first();
-
-        $lotArea = $lot->hoa_subd_lot_area;
-        $cutOffDate = $lot->subdivision->hoa_subd_dues_cutoff_date;
-        $paymentTargets = $lot->subdivision->hoa_subd_dues_payment_target;
-        $generatedDates = Carbon::createFromFormat('Y-m-d', $cutOffDate)->addDay($paymentTargets);
-        $periodDates = $cutOffDate . ' - ' . $generatedDates;
-        $userId= auth()->user()->id;
-        $designee = $lot->user->designee()->count();
-
-
-        $words = explode(" ", $lot->subdivision->hoa_subd_name);
-        $lotFirstString = '';
-
-        foreach ($words as $w) {
-            $lotFirstString .= $w[0];
-        }
-        $lotDateNow = Carbon::now()->format('Y');
-        $lotUniqueId = $lot->id + 1;
-        $statementNumber = $lotFirstString.'-'.$lotDateNow.'-'.$lotUniqueId;
-        $bills = collect();
-
-        foreach ($lot->subdivision->due as $due) {
-            if ($due->unit_id === 1) {
-                $bills->push($due->hoa_subd_dues_cost * $lotArea);
-            } else if ($due->unit_id === 2) {
-                $bills->push($due->hoa_subd_dues_cost);
-            } else if($due->unit_id === 3){
-                $bills->push($due->hoa_subd_dues_cost * $designee + $due->cost);
-            }else{
-                $bills->push(0);
-            }
-        }
-
-//        foreach ($lot->fee as $fee) {
-//            $bills->push($fee->hoa_fees_cost);
-//        }
-        $billingData = [
-            'lot_id' => $id,
-            'hoa_billing_statement_number' => $statementNumber,
-            'hoa_billing_total_cost' => $bills->sum(),
-            'hoa_billing_due_dates' => $cutOffDate,
-            'hoa_billing_generated_date' => $generatedDates,
-            'hoa_billing_period' => $periodDates,
-            'hoa_billing_status' => 'Unpaid',
-            'hoa_billing_created_by'=>$userId
-        ];
-        return Billing::create($billingData);
-    }
 }

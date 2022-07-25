@@ -37,11 +37,6 @@ class FeeController extends Controller
             if ($data) {
                 $data['hoa_fees_modifiedby'] = auth()->user()->id;
             }
-            $billing = Billing::where('id', '=', $data['lot_id'])->latest()->first();
-            $latestCost = $billing->hoa_billing_total_cost + $data['hoa_fees_cost'];
-            $billing->update([
-                'hoa_billing_total_cost' => $latestCost
-            ]);
            $request = $fee->create($data);
 
             return $request;
@@ -75,11 +70,6 @@ class FeeController extends Controller
             if ($data) {
                 $data['hoa_fees_modifiedby'] = auth()->user()->id;
             }
-            $billing = Billing::where('id', '=', $data['lot_id'])->latest()->first();
-            $latestCost = $billing->hoa_billing_total_cost + $data['hoa_fees_cost'];
-            $billing->update([
-                'hoa_billing_total_cost' => $latestCost
-            ]);
             $request = $fee->update($data);
             return $request;
         });
@@ -94,12 +84,6 @@ class FeeController extends Controller
     public function destroy($id)
     {
         $fee = Fee::findOrFail($id);
-        $billing = Billing::where('id', '=', $fee->lot_id)->latest()->first();
-        $latestCost = $billing->hoa_billing_total_cost - $fee->hoa_fees_cost;
-        $billing->update([
-            'hoa_billing_total_cost' => $latestCost
-        ]);
-        $fee->delete();
         return response('', 204);
     }
 

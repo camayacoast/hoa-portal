@@ -15,7 +15,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('sending:email')->everyMinute();
+//         $schedule->command('sending:email')->everyMinute();
+        $schedule->command('billing:onetime')->daily();
+        $schedule->command('billing:monthly')->monthly();
+        $schedule->command('billing:annually')->yearly();
     }
 
     /**

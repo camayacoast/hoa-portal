@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Repositories\GenerateBilling;
 use App\Http\Requests\Admin\DueRequest;
 use App\Http\Resources\Admin\DueResource;
 use App\Http\Resources\Admin\ScheduleResource;
 use App\Models\Due;
+use App\Models\Lot;
 use App\Models\Schedule;
 use App\Models\Unit;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\Validator;
 
 class DueController extends Controller
@@ -32,7 +36,7 @@ class DueController extends Controller
 //                ->paginate(50);
 //            return DueResource::collection($due);
 //        }
-        return DueResource::collection(Due::with('schedule')->where('subdivision_id',$id)->paginate(50));
+        return DueResource::collection(Due::with('schedule')->where('subdivision_id', $id)->paginate(50));
     }
 
     /**
@@ -41,10 +45,10 @@ class DueController extends Controller
      * @param DueRequest $request
      * @return void
      */
-    public function store(DueRequest $request,Due $due)
+    public function store(DueRequest $request, Due $due,GenerateBilling $generateBilling)
     {
         $data = $request->validated();
-        if($data){
+        if ($data) {
             $data['hoa_subd_dues_modifiedby'] = auth()->user()->id;
         }
         $request = $due->create($data);
@@ -74,7 +78,7 @@ class DueController extends Controller
     {
         $due = Due::findOrFail($id);
         $data = $request->validated();
-        if($data){
+        if ($data) {
             $data['hoa_subd_dues_modifiedby'] = auth()->user()->id;
         }
         $request = $due->update($data);
@@ -91,17 +95,20 @@ class DueController extends Controller
     {
         $due = Due::findOrFail($id);
         $due->delete();
-        return response('',204);
+        return response('', 204);
     }
 
-    public function show_schedule(){
+    public function show_schedule()
+    {
         $schedule = Schedule::paginate(50);
         return ScheduleResource::collection($schedule);
     }
 
-    public function units(){
-        return Unit::select('id','name')->get();
+    public function units()
+    {
+        return Unit::select('id', 'name')->get();
     }
+
     public function change_status($id)
     {
         $due = Due::find($id);
