@@ -13,14 +13,14 @@ class GenerateBilling
 {
     public function generate($scheduleId){
         $billingData = collect();
-        $lots = Lot::with('subdivision.due', 'fee')
+        $lots = Lot::with('user.designee','subdivision.due', 'fee')
             ->get();
         $userId = 1;
         $billing = Billing::select('hoa_billing_statement_number')->get();
         foreach ($lots as $lotData){
             $generatedDates = Carbon::createFromFormat('Y-m-d', $lotData->subdivision->hoa_subd_dues_cutoff_date)
                 ->addDay($lotData->subdivision->hoa_subd_dues_payment_target);
-            $periodDate = $lotData->subdivision->hoa_subd_dues_cutoff_date . '-' . $lotData->subdivision->hoa_subd_dues_payment_target;
+            $periodDate = $lotData->subdivision->hoa_subd_dues_cutoff_date . ' - ' .$generatedDates;
             $words = explode(" ", $lotData->subdivision->hoa_subd_name);
             $lotFirstString = '';
             foreach ($words as $w) {
@@ -45,7 +45,7 @@ class GenerateBilling
                         } else if ($dueData->unit_id === 2) {
                             $totalCost[]=$dueData->hoa_subd_dues_cost;
                         } else if ($dueData->unit_id === 3) {
-                            $totalCost[]=$dueData->hoa_subd_dues_cost * $lotData->user->designee()->count() + $dueData->hoa_subd_dues_cost;
+                            $totalCost[]=$dueData->hoa_subd_dues_cost * $lotData->user->designee->count() + $dueData->hoa_subd_dues_cost;
                         } else {
                             $totalCost[]=0;
                         }

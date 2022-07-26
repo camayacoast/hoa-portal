@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\SubdivisionController;
 use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\Admin\Member\LotController;
+use App\Http\Controllers\AutogateGateSyncController;
 use App\Http\Controllers\Member\AnnouncementActionsController;
 use App\Http\Controllers\Member\BillingController;
 use App\Http\Controllers\Member\BillPaymentController;
@@ -141,6 +142,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/transaction/{id}/rfid',[TransactionController::class,'index']);
         Route::apiResource('/transaction',TransactionController::class)->only('delete','store');
         Route::get('/transaction/search/data',[TransactionController::class,'search_transaction']);
+
         //autogate
         Route::apiResource('/autogate',AutogateController::class);
         Route::get('/autogate/search/data',[AutogateController::class,'search_autogate']);
@@ -196,6 +198,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/bill/payment/cash/{id}',PaymentAddressController::class);
     });
     Route::get('/navigation',NavigationController::class);
+    Route::post('/autogate/hoa-gate-sync', AutogateGateSyncController::class);
     Route::post('/logout', [AuthController::class, 'logout']);
 
 });
