@@ -36,6 +36,7 @@ use App\Http\Controllers\Member\Profile\DesigneeController;
 use App\Http\Controllers\Member\Profile\InformationController;
 use App\Http\Controllers\Member\Profile\NotificationController;
 use App\Http\Controllers\Member\Profile\ProfileController;
+use App\Http\Controllers\ShowMemberUserController;
 
 
 /*
@@ -148,7 +149,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/autogate/search/data',[AutogateController::class,'search_autogate']);
         Route::get('/autogate/templates/data',[AutogateController::class,'template']);
         Route::get('/autogate/user/subdivision',[AutogateController::class,'user_subdivision']);
-
+        Route::get('/autogate/search/show/data',[AutogateController::class,'search_user_subdivision']);
         //autogate template
         Route::apiResource('/template',TemplateController::class);
         Route::get('/template/search/data',[TemplateController::class,'search_template']);
@@ -198,6 +199,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/bill/payment/cash/{id}',PaymentAddressController::class);
     });
     Route::get('/navigation',NavigationController::class);
+    Route::get('/show/member/user',[ShowMemberUserController::class,'show_member_user']);
+    Route::get('/show/member/user/search/data',[ShowMemberUserController::class,'search_member_user']);
     Route::post('/autogate/hoa-gate-sync', AutogateGateSyncController::class);
     Route::post('/logout', [AuthController::class, 'logout']);
 

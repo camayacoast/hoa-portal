@@ -107,7 +107,8 @@ class User extends Authenticatable
 //    }
     public function sendPasswordResetNotification($token)
     {
-        $url= 'http://localhost:3000/reset-password/'.$token;
+        $url= env('APP_URL_RESET_PASSWORD'.$token);
+//        $url = 'https://devhoaporta.camayacoast.com/'.$token;
         $this->notify(new ResetPasswordNotification($url));
     }
 }

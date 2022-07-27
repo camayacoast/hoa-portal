@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -22,6 +23,7 @@ Route::get('/reset-password/{token}', function ($token) {
 })->middleware('guest')->name('password.reset');
 
 
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('\login',function (){
     return header('location: http://localhost:3000/login');
